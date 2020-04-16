@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">BluetoothPlug</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+
+    <string name="permission_storage_close_title">Storage permission is not available</string>
+    <string name="permission_storage_close_content">Please find it in cellphone setting- permission, and allow BluetoothPlug use the Storage permission</string>
+    <string name="permission_open">OK</string>
+    <string name="permission_storage_need_title">Please turn on Storage permissions</string>
+    <string name="permission_storage_need_content">BluetoothPlug requires access to Location and Storage permission. If the permissions are not on, BluetoothPlug cannot be used normally.</string>
+    <string name="location_need_title">Turn on Location permission</string>
+    <string name="location_need_content">After that, BluetoothPlug could search and connect with the BluetoothPlug</string>
+    <string name="permission_location_close_title">Location persission is not available</string>
+    <string name="permission_location_close_content">Please find it in cellphone setting- permission, and allow BluetoothPlug use the Location and Storage permission</string>
+    <string name="permission_location_need_title">Turn on Location permission</string>
+    <string name="permission_location_need_content">After that, BluetoothPlug could search and connect with the BluetoothPlug</string>
+
+    <string name="main_exit_tips">Are you sure you want to quit?</string>
+    <string name="setting_syncing">syncing</string>
+
+</resources>
