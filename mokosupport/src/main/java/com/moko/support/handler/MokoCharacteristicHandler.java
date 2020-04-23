@@ -20,8 +20,7 @@ import java.util.List;
 public class MokoCharacteristicHandler {
     private static MokoCharacteristicHandler INSTANCE;
 
-    public static final String SERVICE_UUID_HEADER_SYSTEM = "0000ffc0";
-    public static final String SERVICE_UUID_HEADER_PARAMS = "0000fff0";
+    public static final String SERVICE_UUID_HEADER = "0000ffb0";
 
     public HashMap<OrderType, MokoCharacteristic> mokoCharacteristicMap;
 
@@ -55,23 +54,25 @@ public class MokoCharacteristicHandler {
                 continue;
             }
             List<BluetoothGattCharacteristic> characteristics = service.getCharacteristics();
-            if (service.getUuid().toString().startsWith(SERVICE_UUID_HEADER_SYSTEM)) {
+            if (service.getUuid().toString().startsWith(SERVICE_UUID_HEADER)) {
                 for (BluetoothGattCharacteristic characteristic : characteristics) {
                     String characteristicUuid = characteristic.getUuid().toString();
                     if (TextUtils.isEmpty(characteristicUuid)) {
                         continue;
                     }
-                    if (characteristicUuid.equals(OrderType.CHARACTERISTIC.getUuid())) {
+                    if (characteristicUuid.equals(OrderType.READ_CHARACTER.getUuid())) {
                         gatt.setCharacteristicNotification(characteristic, true);
-                        mokoCharacteristicMap.put(OrderType.CHARACTERISTIC, new MokoCharacteristic(characteristic, OrderType.CHARACTERISTIC));
+                        mokoCharacteristicMap.put(OrderType.READ_CHARACTER, new MokoCharacteristic(characteristic, OrderType.READ_CHARACTER));
                         continue;
                     }
-                }
-            }
-            if (service.getUuid().toString().startsWith(SERVICE_UUID_HEADER_PARAMS)) {
-                for (BluetoothGattCharacteristic characteristic : characteristics) {
-                    String characteristicUuid = characteristic.getUuid().toString();
-                    if (TextUtils.isEmpty(characteristicUuid)) {
+                    if (characteristicUuid.equals(OrderType.WRITE_CHARACTER.getUuid())) {
+                        gatt.setCharacteristicNotification(characteristic, true);
+                        mokoCharacteristicMap.put(OrderType.WRITE_CHARACTER, new MokoCharacteristic(characteristic, OrderType.WRITE_CHARACTER));
+                        continue;
+                    }
+                    if (characteristicUuid.equals(OrderType.NOTIFY_CHARACTER.getUuid())) {
+                        gatt.setCharacteristicNotification(characteristic, true);
+                        mokoCharacteristicMap.put(OrderType.NOTIFY_CHARACTER, new MokoCharacteristic(characteristic, OrderType.WRITE_CHARACTER));
                         continue;
                     }
                 }

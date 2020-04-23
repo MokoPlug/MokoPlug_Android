@@ -8,7 +8,6 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Message;
 import android.os.ParcelUuid;
 import android.text.TextUtils;
@@ -17,9 +16,11 @@ import com.moko.support.callback.MokoConnStateCallback;
 import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.callback.MokoResponseCallback;
 import com.moko.support.callback.MokoScanDeviceCallback;
+import com.moko.support.entity.EnergyInfo;
 import com.moko.support.entity.MokoCharacteristic;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
+import com.moko.support.event.DataChangedEvent;
 import com.moko.support.handler.BaseMessageHandler;
 import com.moko.support.handler.MokoCharacteristicHandler;
 import com.moko.support.handler.MokoConnStateHandler;
@@ -30,8 +31,11 @@ import com.moko.support.task.OrderTask;
 import com.moko.support.utils.BleConnectionCompat;
 import com.moko.support.utils.MokoUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -64,7 +68,7 @@ public class MokoSupport implements MokoResponseCallback {
     private MokoConnStateCallback mMokoConnStateCallback;
     private HashMap<OrderType, MokoCharacteristic> mCharacteristicMap;
     private static final UUID DESCRIPTOR_UUID_NOTIFY = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
-    private static final UUID SERVICE_UUID = UUID.fromString("0000ffc0-0000-1000-8000-00805f9b34fb");
+//    private static final UUID SERVICE_UUID = UUID.fromString("0000ffb0-0000-1000-8000-00805f9b34fb");
 
     private static volatile MokoSupport INSTANCE;
 
@@ -100,10 +104,10 @@ public class MokoSupport implements MokoResponseCallback {
                 // Hardware filtering has some issues on selected devices
                 .setUseHardwareFilteringIfSupported(false)
                 .build();
-        List<ScanFilter> scanFilterList = new ArrayList<>();
-        ScanFilter.Builder builder = new ScanFilter.Builder();
-        builder.setServiceUuid(new ParcelUuid(SERVICE_UUID));
-        scanFilterList.add(builder.build());
+        List<ScanFilter> scanFilterList = Collections.singletonList(new ScanFilter.Builder().build());
+//        ScanFilter.Builder builder = new ScanFilter.Builder();
+//        builder.setServiceUuid(new ParcelUuid(SERVICE_UUID));
+//        scanFilterList.add(builder.build());
         mMokoLeScanHandler = new MokoLeScanHandler(mokoScanDeviceCallback);
         scanner.startScan(scanFilterList, settings, mMokoLeScanHandler);
         mMokoScanDeviceCallback = mokoScanDeviceCallback;
@@ -280,23 +284,61 @@ public class MokoSupport implements MokoResponseCallback {
     public void onCharacteristicChanged(BluetoothGattCharacteristic characteristic, byte[] value) {
         if (!isSyncData()) {
             OrderType orderType = null;
+            if (characteristic.getUuid().toString().equals(OrderType.NOTIFY_CHARACTER.getUuid())) {
+                // 通知
+                orderType = OrderType.NOTIFY_CHARACTER;
+            }
             // 延时应答
             if (orderType != null) {
                 LogModule.i(orderType.getName());
-                Intent intent = new Intent(MokoConstants.ACTION_CURRENT_DATA);
-                intent.putExtra(MokoConstants.EXTRA_KEY_CURRENT_DATA_TYPE, OrderEnum.OPEN_NOTIFY);
-                mContext.sendBroadcast(intent);
+                if (MokoConstants.HEADER_NOTIFY != (value[0] & 0xFF))
+                    return;
+                DataChangedEvent event = new DataChangedEvent();
+                final int function = value[1] & 0xFF;
+                final int length = value[2] & 0xFF;
+                switch (function) {
+                    case 1:
+                        if (length != 1)
+                            return;
+                        event.setFunction(MokoConstants.NOTIFY_FUNCTION_SWITCH);
+                        break;
+                    case 2:
+                        if (length != 1)
+                            return;
+                        event.setFunction(MokoConstants.NOTIFY_FUNCTION_LOAD);
+                        break;
+                    case 3:
+                        if (length != 2)
+                            return;
+                        event.setFunction(MokoConstants.NOTIFY_FUNCTION_OVERLOAD);
+                        break;
+                    case 4:
+                        if (length != 5)
+                            return;
+                        event.setFunction(MokoConstants.NOTIFY_FUNCTION_SWITCH);
+                        break;
+                }
+                event.setValue(value);
+                EventBus.getDefault().post(event);
             }
         } else {
             // 非延时应答
             OrderTask orderTask = mQueue.peek();
+            String characteristicUuid = characteristic.getUuid().toString();
             if (value != null && value.length > 0 && orderTask != null) {
-                OrderEnum orderEnum = orderTask.getOrder();
-                switch (orderEnum) {
-                    case OPEN_NOTIFY:
-                        formatCommonOrder(orderTask, value);
-                        break;
+                if (characteristicUuid.equals(OrderType.READ_CHARACTER) && MokoConstants.HEADER_READ_GET != (value[0] & 0xFF)) {
+                    return;
                 }
+                if (characteristicUuid.equals(OrderType.WRITE_CHARACTER) && MokoConstants.HEADER_WRITE_GET != (value[0] & 0xFF)) {
+                    return;
+                }
+//                OrderEnum orderEnum = orderTask.getOrder();
+//                switch (orderEnum) {
+//                    case READ_ENERGY_HISTORY:
+//                        ReadEnergyHistoryTask readEnergyHistoryTask = (ReadEnergyHistoryTask) orderTask;
+//                        readEnergyHistoryTask.parseValue(value);
+//                        return;
+//                }
                 orderTask.parseValue(value);
             }
         }
@@ -409,7 +451,8 @@ public class MokoSupport implements MokoResponseCallback {
                         @Override
                         public void run() {
                             LogModule.d("开启特征通知");
-                            sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC, OrderEnum.OPEN_NOTIFY, null));
+                            sendOrder(new OpenNotifyTask(OrderType.READ_CHARACTER, OrderEnum.READ_NOTIFY, null)
+                                    , new OpenNotifyTask(OrderType.WRITE_CHARACTER, OrderEnum.WRITE_NOTIFY, null));
                         }
                     }, 2000);
                     break;
@@ -550,4 +593,27 @@ public class MokoSupport implements MokoResponseCallback {
         }
         return false;
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    //
+    ///////////////////////////////////////////////////////////////////////////
+
+    public String advName;
+    public int advInterval;
+    public int switchState;
+    public int powerState;
+    public int overloadState;
+    public int overloadTopValue;
+    public int electricityV;
+    public int electricityC;
+    public int electricityP;
+    public int eneryTotal;
+    public int eneryTotalToday;
+    public int countDown;
+    public String firmwareVersion;
+    public String mac;
+    public int energySavedInterval;
+    public int energyChanged;
+    public List<EnergyInfo> energyHistory;
+    public int overloadValue;
 }

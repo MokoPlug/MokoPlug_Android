@@ -13,7 +13,32 @@ import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.handler.BaseMessageHandler;
 import com.moko.support.log.LogModule;
+import com.moko.support.task.OrderTask;
 import com.moko.support.task.OrderTaskResponse;
+import com.moko.support.task.ReadAdvIntervalTask;
+import com.moko.support.task.ReadAdvNameTask;
+import com.moko.support.task.ReadCountdownTask;
+import com.moko.support.task.ReadElectricityTask;
+import com.moko.support.task.ReadEnergyHistoryTask;
+import com.moko.support.task.ReadEnergyParamsTask;
+import com.moko.support.task.ReadEnergyTotalTask;
+import com.moko.support.task.ReadFirmwareVersionTask;
+import com.moko.support.task.ReadLoadStateTask;
+import com.moko.support.task.ReadMacTask;
+import com.moko.support.task.ReadOverloadTopValueTask;
+import com.moko.support.task.ReadOverloadValueTask;
+import com.moko.support.task.ReadPowerStateTask;
+import com.moko.support.task.ReadSwitchStateTask;
+import com.moko.support.task.WriteAdvIntervalTask;
+import com.moko.support.task.WriteAdvNameTask;
+import com.moko.support.task.WriteCountdownTask;
+import com.moko.support.task.WriteEnergyParamsTask;
+import com.moko.support.task.WriteOverloadTopValueTask;
+import com.moko.support.task.WritePowerStateTask;
+import com.moko.support.task.WriteResetEnergyTotalTask;
+import com.moko.support.task.WriteResetTask;
+import com.moko.support.task.WriteSwitchStateTask;
+import com.moko.support.task.WriteSystemTimeTask;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -134,5 +159,135 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
         @Override
         protected void handleMessage(MokoService service, Message msg) {
         }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    //
+    ///////////////////////////////////////////////////////////////////////////
+    public OrderTask readAdvInterval() {
+        ReadAdvIntervalTask task = new ReadAdvIntervalTask(this);
+        return task;
+    }
+
+    public OrderTask readAdvName() {
+        ReadAdvNameTask task = new ReadAdvNameTask(this);
+        return task;
+    }
+
+    public OrderTask readCountdown() {
+        ReadCountdownTask task = new ReadCountdownTask(this);
+        return task;
+    }
+
+    public OrderTask readElectricity() {
+        ReadElectricityTask task = new ReadElectricityTask(this);
+        return task;
+    }
+
+    public OrderTask readEnergyHistory() {
+        ReadEnergyHistoryTask task = new ReadEnergyHistoryTask(this);
+        return task;
+    }
+
+    public OrderTask readEnergyParams() {
+        ReadEnergyParamsTask task = new ReadEnergyParamsTask(this);
+        return task;
+    }
+
+    public OrderTask readEnergyTotal() {
+        ReadEnergyTotalTask task = new ReadEnergyTotalTask(this);
+        return task;
+    }
+
+    public OrderTask readFirmwareVersion() {
+        ReadFirmwareVersionTask task = new ReadFirmwareVersionTask(this);
+        return task;
+    }
+
+    public OrderTask readLoadState() {
+        ReadLoadStateTask task = new ReadLoadStateTask(this);
+        return task;
+    }
+
+    public OrderTask readMac() {
+        ReadMacTask task = new ReadMacTask(this);
+        return task;
+    }
+
+    public OrderTask readOverloadTopValue() {
+        ReadOverloadTopValueTask task = new ReadOverloadTopValueTask(this);
+        return task;
+    }
+
+    public OrderTask readOverloadValue() {
+        ReadOverloadValueTask task = new ReadOverloadValueTask(this);
+        return task;
+    }
+
+    public OrderTask readPowerState() {
+        ReadPowerStateTask task = new ReadPowerStateTask(this);
+        return task;
+    }
+
+    public OrderTask readSwitchState() {
+        ReadSwitchStateTask task = new ReadSwitchStateTask(this);
+        return task;
+    }
+
+    public OrderTask writeAdvInterval(int advInterval) {
+        WriteAdvIntervalTask task = new WriteAdvIntervalTask(this);
+        task.setData(advInterval);
+        return task;
+    }
+
+    public OrderTask writeAdvName(String advName) {
+        WriteAdvNameTask task = new WriteAdvNameTask(this);
+        task.setData(advName);
+        return task;
+    }
+
+    public OrderTask writeCountdown(int countdown) {
+        WriteCountdownTask task = new WriteCountdownTask(this);
+        task.setData(countdown);
+        return task;
+    }
+
+    public OrderTask writeEnergyParams(int savedInterval, int changed) {
+        WriteEnergyParamsTask task = new WriteEnergyParamsTask(this);
+        task.setData(savedInterval, changed);
+        return task;
+    }
+
+    public OrderTask writeOverloadTopValue(int topValue) {
+        WriteOverloadTopValueTask task = new WriteOverloadTopValueTask(this);
+        task.setData(topValue);
+        return task;
+    }
+
+    public OrderTask writePowerState(int powerState) {
+        WritePowerStateTask task = new WritePowerStateTask(this);
+        task.setData(powerState);
+        return task;
+    }
+
+    public OrderTask writeResetEnergyTotal() {
+        WriteResetEnergyTotalTask task = new WriteResetEnergyTotalTask(this);
+        return task;
+    }
+
+    public OrderTask writeReset() {
+        WriteResetTask task = new WriteResetTask(this);
+        return task;
+    }
+
+    public OrderTask writeSwitchState(int switchState) {
+        WriteSwitchStateTask task = new WriteSwitchStateTask(this);
+        task.setData(switchState);
+        return task;
+    }
+
+    public OrderTask writeSystemTime() {
+        WriteSystemTimeTask task = new WriteSystemTimeTask(this);
+        return task;
     }
 }

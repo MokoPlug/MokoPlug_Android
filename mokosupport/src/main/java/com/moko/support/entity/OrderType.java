@@ -9,7 +9,9 @@ import java.io.Serializable;
  * @ClassPath com.moko.support.entity.OrderType
  */
 public enum OrderType implements Serializable {
-    CHARACTERISTIC("CHARACTERISTIC", "0000ffc2-0000-1000-8000-00805f9b34fb"),
+    READ_CHARACTER("READ_CHARACTER", "0000ffb0-0000-1000-8000-00805f9b34fb"),
+    WRITE_CHARACTER("WRITE_CHARACTER", "0000ffb1-0000-1000-8000-00805f9b34fb"),
+    NOTIFY_CHARACTER("NOTIFY_CHARACTER", "0000ffb2-0000-1000-8000-00805f9b34fb"),
     ;
 
 

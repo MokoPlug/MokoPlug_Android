@@ -29,11 +29,12 @@ public class MokoLeScanHandler extends ScanCallback {
             BluetoothDevice device = result.getDevice();
             byte[] scanRecord = result.getScanRecord().getBytes();
             int rssi = result.getRssi();
-            if (TextUtils.isEmpty(device.getName()) || scanRecord.length == 0 || rssi == 127) {
+            String name = result.getScanRecord().getDeviceName();
+            if (TextUtils.isEmpty(name) || scanRecord.length == 0 || rssi == 127) {
                 return;
             }
             DeviceInfo deviceInfo = new DeviceInfo();
-            deviceInfo.name = device.getName();
+            deviceInfo.name = name;
             deviceInfo.rssi = rssi;
             deviceInfo.mac = device.getAddress();
             String scanRecordStr = MokoUtils.bytesToHexString(scanRecord);

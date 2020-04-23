@@ -2,6 +2,8 @@ package com.moko.bluetoothplug.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Environment;
@@ -72,6 +74,22 @@ public class Utils {
         }
     }
 
+    public static String getVersionInfo(Context context) {
+        // 获取packagemanager的实例
+        PackageManager packageManager = context.getPackageManager();
+        // getPackageName()是你当前类的包名，0代表是获取版本信息
+        PackageInfo packInfo = null;
+        try {
+            packInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (packInfo != null) {
+            String version = packInfo.versionName;
+            return version;
+        }
+        return "";
+    }
 
     /**
      * 手机是否开启位置服务，如果没有开启那么所有app将不能使用定位功能

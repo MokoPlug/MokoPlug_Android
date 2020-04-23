@@ -3,9 +3,13 @@ package com.moko.support.utils;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.text.TextUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @Date 2017/12/7 0007
@@ -212,5 +216,23 @@ public class MokoUtils {
         }
 
         return result;
+    }
+
+    public static Calendar strDate2Calendar(String strDate, String pattern) {
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern, Locale.US);
+        try {
+            Date date = sdf.parse(strDate);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            return calendar;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String calendar2StrDate(Calendar calendar, String pattren) {
+        String strDate = new SimpleDateFormat(pattren, Locale.US).format(calendar.getTime());
+        return strDate;
     }
 }
