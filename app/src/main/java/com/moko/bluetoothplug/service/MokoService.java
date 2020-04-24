@@ -20,6 +20,7 @@ import com.moko.support.task.ReadAdvNameTask;
 import com.moko.support.task.ReadCountdownTask;
 import com.moko.support.task.ReadElectricityTask;
 import com.moko.support.task.ReadEnergyHistoryTask;
+import com.moko.support.task.ReadEnergyHistoryTodayTask;
 import com.moko.support.task.ReadEnergyParamsTask;
 import com.moko.support.task.ReadEnergyTotalTask;
 import com.moko.support.task.ReadFirmwareVersionTask;
@@ -186,6 +187,11 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
 
     public OrderTask readEnergyHistory() {
         ReadEnergyHistoryTask task = new ReadEnergyHistoryTask(this);
+        return task;
+    }
+
+    public OrderTask readEnergyHistoryToday() {
+        ReadEnergyHistoryTodayTask task = new ReadEnergyHistoryTodayTask(this);
         return task;
     }
 

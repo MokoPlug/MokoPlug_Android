@@ -42,7 +42,9 @@
         android:id="@+id/rl_edit_filter"
         android:layout_width="match_parent"
         android:layout_height="32dp"
-        android:layout_margin="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="12dp"
         android:background="@drawable/shape_edit_grey_bg"
         android:paddingLeft="12dp"
         android:paddingRight="12dp">
@@ -53,7 +55,7 @@
             android:gravity="center_vertical"
             android:text="Edit Filter"
             android:textColor="@color/grey_808080"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
     </RelativeLayout>
 
@@ -61,7 +63,9 @@
         android:id="@+id/rl_filter"
         android:layout_width="match_parent"
         android:layout_height="32dp"
-        android:layout_margin="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="12dp"
         android:background="@drawable/shape_edit_grey_bg"
         android:paddingLeft="12dp"
         android:visibility="gone">
@@ -73,7 +77,7 @@
             android:gravity="center_vertical"
             android:text=""
             android:textColor="@color/black_333333"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
         <ImageView
             android:id="@+id/iv_filter_delete"
@@ -90,6 +94,7 @@
         android:id="@+id/rv_devices"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="6dp"
         android:layout_weight="1.0"
         android:overScrollMode="never"
         android:paddingLeft="12dp"

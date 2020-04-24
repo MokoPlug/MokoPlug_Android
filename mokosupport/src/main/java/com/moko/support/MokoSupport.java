@@ -615,5 +615,6 @@ public class MokoSupport implements MokoResponseCallback {
     public int energySavedInterval;
     public int energyChanged;
     public List<EnergyInfo> energyHistory;
+    public List<EnergyInfo> energyHistoryToday;
     public int overloadValue;
 }

@@ -33,15 +33,15 @@ public class ReadEnergyTotalTask extends OrderTask {
     public void parseValue(byte[] value) {
         if (order.getOrderHeader() != (value[1] & 0xFF))
             return;
-        if (0x05 != (value[2] & 0xFF))
+        if (0x03 != (value[2] & 0xFF))
             return;
         byte[] totalBytes = Arrays.copyOfRange(value, 3, 6);
         final int total = MokoUtils.toInt(totalBytes);
         MokoSupport.getInstance().eneryTotal = total;
 
-        byte[] totalTodayBytes = Arrays.copyOfRange(value, 6, 8);
-        final int totalToday = MokoUtils.toInt(totalTodayBytes);
-        MokoSupport.getInstance().eneryTotalToday = totalToday;
+//        byte[] totalTodayBytes = Arrays.copyOfRange(value, 6, 8);
+//        final int totalToday = MokoUtils.toInt(totalTodayBytes);
+//        MokoSupport.getInstance().eneryTotalToday = totalToday;
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;

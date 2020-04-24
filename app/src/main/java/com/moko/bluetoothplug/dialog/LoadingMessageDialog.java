@@ -1,7 +1,9 @@
 package com.moko.bluetoothplug.dialog;
 
 import android.content.DialogInterface;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,6 +23,10 @@ public class LoadingMessageDialog extends BaseDialog {
     @Bind(R.id.tv_loading_message)
     TextView tvLoadingMessage;
 
+    private String message;
+
+    private int messageId = -1;
+
     @Override
     public int getLayoutRes() {
         return R.layout.dialog_loading_message;
@@ -33,7 +39,13 @@ public class LoadingMessageDialog extends BaseDialog {
         progressDrawable.setColor(ContextCompat.getColor(getContext(), R.color.text_black_4d4d4d));
         ivLoading.setImageDrawable(progressDrawable);
         progressDrawable.start();
-        tvLoadingMessage.setText(getString(R.string.setting_syncing));
+        if (messageId > 0) {
+            message = getString(messageId);
+        }
+        if (TextUtils.isEmpty(message)) {
+            message  = getString(R.string.setting_syncing);
+        }
+        tvLoadingMessage.setText(message);
         tvLoadingMessage.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -90,6 +102,16 @@ public class LoadingMessageDialog extends BaseDialog {
         super.onDestroyView();
         ((ProgressDrawable) ivLoading.getDrawable()).stop();
         ButterKnife.unbind(this);
+    }
+
+
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setMessage(@StringRes int messageId) {
+        this.messageId = messageId;
     }
 
     private DialogDissmissCallback callback;

@@ -28,14 +28,17 @@ import com.moko.bluetoothplug.R;
 import com.moko.bluetoothplug.adapter.PlugListAdapter;
 import com.moko.bluetoothplug.dialog.AlertMessageDialog;
 import com.moko.bluetoothplug.dialog.LoadingDialog;
+import com.moko.bluetoothplug.dialog.LoadingMessageDialog;
 import com.moko.bluetoothplug.dialog.ScanFilterDialog;
 import com.moko.bluetoothplug.entity.PlugInfo;
 import com.moko.bluetoothplug.service.MokoService;
+import com.moko.bluetoothplug.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.callback.MokoScanDeviceCallback;
 import com.moko.support.entity.DeviceInfo;
 import com.moko.support.event.ConnectStatusEvent;
+import com.moko.support.task.OrderTask;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -88,9 +91,6 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         adapter.setOnItemClickListener(this);
         adapter.openLoadAnimation();
         rvDevices.setLayoutManager(new LinearLayoutManager(this));
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        itemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.shape_recycleview_divider));
-        rvDevices.addItemDecoration(itemDecoration);
         rvDevices.setAdapter(adapter);
     }
 
@@ -134,6 +134,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
 
                 }
                 if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
+                    dismissLoadingMessageDialog();
 
                 }
                 if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
@@ -165,10 +166,39 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         String action = event.getAction();
         if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
             // 设备断开，通知页面更新
-
+            dismissLoadingProgressDialog();
+            if (animation == null) {
+                ToastUtils.showToast(MainActivity.this, "Disconnected");
+                startScan();
+            }
         }
         if (MokoConstants.ACTION_DISCOVER_SUCCESS.equals(action)) {
             // 设备连接成功，通知页面更新
+            dismissLoadingProgressDialog();
+            showLoadingMessageDialog();
+            mMokoService.mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    ArrayList<OrderTask> orderTasks = new ArrayList<>();
+                    orderTasks.add(mMokoService.writeSystemTime());
+                    orderTasks.add(mMokoService.readAdvInterval());
+                    orderTasks.add(mMokoService.readAdvName());
+                    orderTasks.add(mMokoService.readCountdown());
+                    orderTasks.add(mMokoService.readElectricity());
+                    orderTasks.add(mMokoService.readEnergyHistory());
+                    orderTasks.add(mMokoService.readEnergyHistoryToday());
+                    orderTasks.add(mMokoService.readEnergyParams());
+                    orderTasks.add(mMokoService.readEnergyTotal());
+                    orderTasks.add(mMokoService.readFirmwareVersion());
+                    orderTasks.add(mMokoService.readLoadState());
+                    orderTasks.add(mMokoService.readMac());
+                    orderTasks.add(mMokoService.readOverloadTopValue());
+                    orderTasks.add(mMokoService.readOverloadValue());
+                    orderTasks.add(mMokoService.readPowerState());
+                    orderTasks.add(mMokoService.readSwitchState());
+                    MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+                }
+            }, 1000);
         }
     }
 
@@ -202,6 +232,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         }
         unbindService(mServiceConnection);
         EventBus.getDefault().unregister(this);
+        stopService(new Intent(this, MokoService.class));
     }
 
     private void startScan() {
@@ -253,7 +284,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         final PlugInfo plugInfo = plugInfoParseable.parseDeviceInfo(deviceInfo);
         if (plugInfo == null)
             return;
-        plugInfoHashMap.put(plugInfo.mac, plugInfo);
+        plugInfoHashMap.put(String.valueOf(plugInfo.rssi), plugInfo);
     }
 
     @Override
@@ -399,6 +430,29 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         }
     }
 
+    @Override
+    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            // 蓝牙未打开，开启蓝牙
+            MokoSupport.getInstance().enableBluetooth();
+            return;
+        }
+        final PlugInfo plugInfo = (PlugInfo) adapter.getItem(position);
+        if (plugInfo != null && !isFinishing()) {
+            if (animation != null) {
+                mMokoService.mHandler.removeMessages(0);
+                MokoSupport.getInstance().stopScanDevice();
+            }
+            showLoadingProgressDialog();
+            ivRefresh.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mMokoService.connectBluetoothDevice(plugInfo.mac);
+                }
+            }, 1000);
+        }
+    }
+
     private LoadingDialog mLoadingDialog;
 
     private void showLoadingProgressDialog() {
@@ -412,6 +466,20 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             mLoadingDialog.dismissAllowingStateLoss();
     }
 
+    private LoadingMessageDialog mLoadingMessageDialog;
+
+    private void showLoadingMessageDialog() {
+        mLoadingMessageDialog = new LoadingMessageDialog();
+        mLoadingMessageDialog.setMessage("Verifying..");
+        mLoadingMessageDialog.show(getSupportFragmentManager());
+
+    }
+
+    private void dismissLoadingMessageDialog() {
+        if (mLoadingMessageDialog != null)
+            mLoadingMessageDialog.dismissAllowingStateLoss();
+    }
+
     @Override
     public void onBackPressed() {
         AlertMessageDialog dialog = new AlertMessageDialog();
@@ -423,10 +491,5 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             }
         });
         dialog.show(getSupportFragmentManager());
-    }
-
-    @Override
-    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-
     }
 }

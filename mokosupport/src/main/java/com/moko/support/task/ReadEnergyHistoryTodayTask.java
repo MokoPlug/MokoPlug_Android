@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-public class ReadEnergyHistoryTask extends OrderTask {
+public class ReadEnergyHistoryTodayTask extends OrderTask {
     private static final int ORDERDATA_LENGTH = 3;
 
     public byte[] orderData;
@@ -23,8 +23,8 @@ public class ReadEnergyHistoryTask extends OrderTask {
     private List<EnergyInfo> energyInfos;
     private Calendar calendar;
 
-    public ReadEnergyHistoryTask(MokoOrderTaskCallback callback) {
-        super(OrderType.READ_CHARACTER, OrderEnum.READ_ENERGY_HISTORY, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public ReadEnergyHistoryTodayTask(MokoOrderTaskCallback callback) {
+        super(OrderType.READ_CHARACTER, OrderEnum.READ_ENERGY_HISTORY_TODAY, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_READ_SEND;
         orderData[1] = (byte) order.getOrderHeader();
@@ -38,7 +38,7 @@ public class ReadEnergyHistoryTask extends OrderTask {
 
     @Override
     public void parseValue(byte[] value) {
-        if (0x0D == (value[1] & 0xFF)) {
+        if (0x11 == (value[1] & 0xFF)) {
             LogModule.i(order.getOrderName() + "成功");
             if (0x01 == (value[2] & 0xFF)) {
                 // 没有历史数据
@@ -47,37 +47,31 @@ public class ReadEnergyHistoryTask extends OrderTask {
                 callback.onOrderResult(response);
                 MokoSupport.getInstance().executeTask(callback);
             }
-            if (0x07 == (value[2] & 0xFF)) {
+            if (0x03 == (value[2] & 0xFF)) {
                 total = value[3] & 0xFF;
+                byte[] totalTodayBytes = Arrays.copyOfRange(value, 4, 6);
+                final int totalToday = MokoUtils.toInt(totalTodayBytes);
+                MokoSupport.getInstance().eneryTotalToday = totalToday;
                 energyInfos = new ArrayList<>();
-                int year = MokoUtils.toInt(Arrays.copyOfRange(value, 3, 5));
-                int month = value[6] & 0xFF;
-                int day = value[7] & 0xFF;
-                int hour = value[8] & 0xFF;
-                int minute = value[9] & 0xFF;
                 calendar = Calendar.getInstance();
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, month - 1);
-                calendar.set(Calendar.DAY_OF_MONTH, day);
-                calendar.set(Calendar.HOUR_OF_DAY, hour);
-                calendar.set(Calendar.MINUTE, minute);
             }
         }
-        if (0x0E == (value[1] & 0xFF)) {
+        if (0x12 == (value[1] & 0xFF)) {
             int count = (value[2] & 0xFF) / 3;
             for (int i = 0; i < count; i++) {
                 EnergyInfo energyInfo = new EnergyInfo();
                 total--;
-                int day = value[3 + 3 * i];
+                int hour = value[3 + 3 * i];
                 byte[] energyBytes = Arrays.copyOfRange(value, 4 + 3 * i, 6 + 3 * i);
                 int energy = MokoUtils.toInt(energyBytes);
                 Calendar c = (Calendar) calendar.clone();
-                c.add(Calendar.DAY_OF_MONTH, day);
-                energyInfo.recordDate = MokoUtils.calendar2StrDate(c, "yyyy-MM-dd");
+                c.add(Calendar.HOUR_OF_DAY, hour);
+                c.set(Calendar.MINUTE, 0);
+                energyInfo.recordDate = MokoUtils.calendar2StrDate(c, "yyyy-MM-dd HH:mm");
                 energyInfo.value = energy;
                 energyInfos.add(energyInfo);
             }
-            MokoSupport.getInstance().energyHistory = energyInfos;
+            MokoSupport.getInstance().energyHistoryToday = energyInfos;
             if (total <= 0) {
                 orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
                 MokoSupport.getInstance().pollTask();
