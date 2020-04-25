@@ -35,9 +35,9 @@ public class PlugInfoParseableImpl implements DeviceInfoParseable<PlugInfo> {
         plugInfo.name = deviceInfo.name;
         plugInfo.mac = deviceInfo.mac;
         plugInfo.rssi = deviceInfo.rssi;
-        plugInfo.electricityV = MokoUtils.toInt(electricityVBytes);
-        plugInfo.electricityC = MokoUtils.toInt(electricityCBytes);
-        plugInfo.electricityP = MokoUtils.toInt(electricityPBytes);
+        plugInfo.electricityV = MokoUtils.getDecimalFormat("0.#").format(MokoUtils.toInt(electricityVBytes) * 0.1f);
+        plugInfo.electricityC = MokoUtils.getDecimalFormat("0.###").format(MokoUtils.toInt(electricityCBytes) * 0.001f);
+        plugInfo.electricityP = MokoUtils.getDecimalFormat("0.#").format(MokoUtils.toInt(electricityPBytes) * 0.1f);
         if (TextUtils.isEmpty(binary)) {
             plugInfo.overloadState = 0;
             plugInfo.onoff = 0;

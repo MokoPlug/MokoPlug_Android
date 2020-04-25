@@ -3,6 +3,8 @@ package com.moko.support.utils;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.text.TextUtils;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -234,5 +236,13 @@ public class MokoUtils {
     public static String calendar2StrDate(Calendar calendar, String pattren) {
         String strDate = new SimpleDateFormat(pattren, Locale.US).format(calendar.getTime());
         return strDate;
+    }
+
+    public static DecimalFormat getDecimalFormat(String pattern) {
+        DecimalFormat decimalFormat = new DecimalFormat(pattern);
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+        dfs.setDecimalSeparator('.');
+        decimalFormat.setDecimalFormatSymbols(dfs);
+        return decimalFormat;
     }
 }

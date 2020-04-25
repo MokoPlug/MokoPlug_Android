@@ -35,6 +35,8 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -300,6 +302,8 @@ public class MokoSupport implements MokoResponseCallback {
                     case 1:
                         if (length != 1)
                             return;
+                        final int switchState = value[3] & 0xFF;
+                        this.switchState = switchState;
                         event.setFunction(MokoConstants.NOTIFY_FUNCTION_SWITCH);
                         break;
                     case 2:
@@ -310,12 +314,63 @@ public class MokoSupport implements MokoResponseCallback {
                     case 3:
                         if (length != 2)
                             return;
+                        final int overLoadState = value[3] & 0xFF;
+                        this.overloadState = overLoadState;
                         event.setFunction(MokoConstants.NOTIFY_FUNCTION_OVERLOAD);
                         break;
                     case 4:
                         if (length != 5)
                             return;
-                        event.setFunction(MokoConstants.NOTIFY_FUNCTION_SWITCH);
+                        byte[] countDownBytes = Arrays.copyOfRange(value, 4, 8);
+                        final int countDown = MokoUtils.toInt(countDownBytes);
+                        this.countDown = countDown;
+                        event.setFunction(MokoConstants.NOTIFY_FUNCTION_COUNTDOWN);
+                        break;
+                    case 5:
+                        if (length != 7)
+                            return;
+                        byte[] vBytes = Arrays.copyOfRange(value, 3, 5);
+                        final int v = MokoUtils.toInt(vBytes);
+                        this.electricityV = MokoUtils.getDecimalFormat("0.#").format(v * 0.1f);
+
+                        byte[] cBytes = Arrays.copyOfRange(value, 5, 8);
+                        final int c = MokoUtils.toInt(cBytes);
+                        this.electricityC =  String.valueOf(c);
+
+                        byte[] pBytes = Arrays.copyOfRange(value, 8, 10);
+                        final int p = MokoUtils.toInt(pBytes);
+                        this.electricityP =  MokoUtils.getDecimalFormat("0.#").format(p * 0.1f);
+                        event.setFunction(MokoConstants.NOTIFY_FUNCTION_ELECTRICITY);
+                        break;
+                    case 6:
+                        if (length != 12)
+                            return;
+                        EnergyInfo energyInfo = new EnergyInfo();
+                        int year = MokoUtils.toInt(Arrays.copyOfRange(value, 3, 5));
+                        int month = value[5] & 0xFF;
+                        int day = value[6] & 0xFF;
+                        int hour = value[7] & 0xFF;
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, month - 1);
+                        calendar.set(Calendar.DAY_OF_MONTH, day);
+                        calendar.set(Calendar.HOUR_OF_DAY, hour);
+                        byte[] totalBytes = Arrays.copyOfRange(value, 8, 11);
+                        final int total = MokoUtils.toInt(totalBytes);
+                        this.eneryTotal = total * 0.01f;
+
+                        byte[] totalTodayBytes = Arrays.copyOfRange(value, 11, 13);
+                        final int totalToday = MokoUtils.toInt(totalTodayBytes);
+                        this.eneryTotalToday = totalToday * 0.01f;
+
+                        byte[] currentBytes = Arrays.copyOfRange(value, 13, 15);
+                        final int current = MokoUtils.toInt(currentBytes);
+                        float energyCurrent = current * 0.01f;
+
+                        energyInfo.recordDate = MokoUtils.calendar2StrDate(calendar, "yyyy-MM-dd HH");
+                        energyInfo.value = energyCurrent;
+                        this.energyCurrent = energyInfo;
+                        event.setFunction(MokoConstants.NOTIFY_FUNCTION_ENERGY);
                         break;
                 }
                 event.setValue(value);
@@ -604,11 +659,11 @@ public class MokoSupport implements MokoResponseCallback {
     public int powerState;
     public int overloadState;
     public int overloadTopValue;
-    public int electricityV;
-    public int electricityC;
-    public int electricityP;
-    public int eneryTotal;
-    public int eneryTotalToday;
+    public String electricityV;
+    public String electricityC;
+    public String electricityP;
+    public float eneryTotal;
+    public float eneryTotalToday;
     public int countDown;
     public String firmwareVersion;
     public String mac;
@@ -617,4 +672,5 @@ public class MokoSupport implements MokoResponseCallback {
     public List<EnergyInfo> energyHistory;
     public List<EnergyInfo> energyHistoryToday;
     public int overloadValue;
+    public EnergyInfo energyCurrent;
 }

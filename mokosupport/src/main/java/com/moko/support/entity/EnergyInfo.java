@@ -4,5 +4,5 @@ import java.io.Serializable;
 
 public class EnergyInfo implements Serializable {
     public String recordDate;
-    public int value;
+    public float value;
 }

@@ -18,6 +18,10 @@ public class MokoConstants {// 读取发送头
     public static final int NOTIFY_FUNCTION_OVERLOAD = 0x03;
     // 倒计时通知
     public static final int NOTIFY_FUNCTION_COUNTDOWN = 0x04;
+    // 当前电压、电流、功率通知
+    public static final int NOTIFY_FUNCTION_ELECTRICITY = 0x05;
+    // 当前电能数据通知
+    public static final int NOTIFY_FUNCTION_ENERGY = 0x06;
     // 发现状态
     public static final String ACTION_DISCOVER_SUCCESS = "com.moko.bluetoothplug.ACTION_DISCOVER_SUCCESS";
     public static final String ACTION_DISCOVER_TIMEOUT = "com.moko.bluetoothplug.ACTION_DISCOVER_TIMEOUT";

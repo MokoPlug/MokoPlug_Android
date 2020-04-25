@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/shape_radius_white_bg"
         android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintWidth_percent="0.8">
@@ -62,6 +63,7 @@
                 android:textSize="16sp" />
 
             <View
+                android:id="@+id/view_divider"
                 android:layout_width="1px"
                 android:layout_height="match_parent"
                 android:background="@color/grey_d9d9d9" />

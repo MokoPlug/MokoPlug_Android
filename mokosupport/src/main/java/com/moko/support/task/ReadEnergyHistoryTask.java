@@ -50,7 +50,7 @@ public class ReadEnergyHistoryTask extends OrderTask {
             if (0x07 == (value[2] & 0xFF)) {
                 total = value[3] & 0xFF;
                 energyInfos = new ArrayList<>();
-                int year = MokoUtils.toInt(Arrays.copyOfRange(value, 3, 5));
+                int year = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
                 int month = value[6] & 0xFF;
                 int day = value[7] & 0xFF;
                 int hour = value[8] & 0xFF;
@@ -73,8 +73,8 @@ public class ReadEnergyHistoryTask extends OrderTask {
                 int energy = MokoUtils.toInt(energyBytes);
                 Calendar c = (Calendar) calendar.clone();
                 c.add(Calendar.DAY_OF_MONTH, day);
-                energyInfo.recordDate = MokoUtils.calendar2StrDate(c, "yyyy-MM-dd");
-                energyInfo.value = energy;
+                energyInfo.recordDate = MokoUtils.calendar2StrDate(c, "yyyy-MM-dd HH");
+                energyInfo.value = energy * 0.01f;
                 energyInfos.add(energyInfo);
             }
             MokoSupport.getInstance().energyHistory = energyInfos;

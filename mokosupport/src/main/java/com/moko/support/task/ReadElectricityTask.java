@@ -37,15 +37,15 @@ public class ReadElectricityTask extends OrderTask {
             return;
         byte[] vBytes = Arrays.copyOfRange(value, 3, 5);
         final int v = MokoUtils.toInt(vBytes);
-        MokoSupport.getInstance().electricityV = v;
+        MokoSupport.getInstance().electricityV = MokoUtils.getDecimalFormat("0.#").format(v * 0.1f);
 
         byte[] cBytes = Arrays.copyOfRange(value, 5, 8);
         final int c = MokoUtils.toInt(cBytes);
-        MokoSupport.getInstance().electricityC = c;
+        MokoSupport.getInstance().electricityC =  String.valueOf(c);
 
         byte[] pBytes = Arrays.copyOfRange(value, 8, 10);
         final int p = MokoUtils.toInt(pBytes);
-        MokoSupport.getInstance().electricityP = p;
+        MokoSupport.getInstance().electricityP =  MokoUtils.getDecimalFormat("0.#").format(p * 0.1f);
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
