@@ -31,6 +31,7 @@ import com.moko.bluetoothplug.R;
 import com.moko.bluetoothplug.dialog.AlertMessageDialog;
 import com.moko.bluetoothplug.dialog.LoadingMessageDialog;
 import com.moko.bluetoothplug.fragment.PowerFragment;
+import com.moko.bluetoothplug.fragment.TimerFragment;
 import com.moko.bluetoothplug.service.DfuService;
 import com.moko.bluetoothplug.service.MokoService;
 import com.moko.bluetoothplug.utils.FileUtils;
@@ -38,7 +39,6 @@ import com.moko.bluetoothplug.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.event.ConnectStatusEvent;
-import com.moko.support.event.DataChangedEvent;
 import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTask;
 
@@ -76,6 +76,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     public MokoService mMokoService;
     private FragmentManager fragmentManager;
     private PowerFragment powerFragment;
+    private TimerFragment timerFragment;
     public String mDeviceMac;
     public String mDeviceName;
     private int validCount;
@@ -100,8 +101,11 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     private void initFragment() {
         fragmentManager = getFragmentManager();
         powerFragment = PowerFragment.newInstance();
+        timerFragment = TimerFragment.newInstance();
         fragmentManager.beginTransaction()
                 .add(R.id.frame_container, powerFragment)
+                .add(R.id.frame_container, timerFragment)
+                .hide(timerFragment)
                 .show(powerFragment)
                 .commit();
     }
@@ -274,10 +278,21 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             case R.id.radioBtn_power:
                 fragmentManager.beginTransaction()
                         .show(powerFragment)
+                        .hide(timerFragment)
+                        .commit();
+                break;
+            case R.id.radioBtn_timer:
+                fragmentManager.beginTransaction()
+                        .hide(powerFragment)
+                        .show(timerFragment)
                         .commit();
                 break;
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Setting
+    ///////////////////////////////////////////////////////////////////////////
 
     public void chooseFirmwareFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -399,9 +414,23 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         }
     };
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Power
+    ///////////////////////////////////////////////////////////////////////////
+
     public void changeSwitchState(boolean switchState) {
-        OrderTask orderTask = mMokoService.writeSwitchState(switchState ? 0:1);
-        MokoSupport.getInstance().sendOrder(orderTask);
         showSyncingProgressDialog();
+        OrderTask orderTask = mMokoService.writeSwitchState(switchState ? 0 : 1);
+        MokoSupport.getInstance().sendOrder(orderTask);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Timer
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void setTimer(int countdown) {
+        showSyncingProgressDialog();
+        OrderTask orderTask = mMokoService.writeCountdown(countdown);
+        MokoSupport.getInstance().sendOrder(orderTask);
     }
 }

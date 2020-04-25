@@ -23,5 +23,8 @@
 
     <string name="main_exit_tips">Are you sure you want to quit?</string>
     <string name="setting_syncing">syncing</string>
+    <string name="countdown_tips">%s after countdown</string>
+    <string name="countdown_timer_on">Countdown timer (on)</string>
+    <string name="countdown_timer_off">Countdown timer (off)</string>
 
 </resources>

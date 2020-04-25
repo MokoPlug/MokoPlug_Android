@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,9 +109,11 @@ public class PowerFragment extends Fragment {
             setOverLoad();
         }
         String electricityP = MokoSupport.getInstance().electricityP;
-        float progress = Float.parseFloat(electricityP) * 0.1f;
-        arcProgress.setProgress(progress);
-        tvPower.setText(electricityP);
+        if (!TextUtils.isEmpty(electricityP)) {
+            float progress = Float.parseFloat(electricityP) * 0.1f;
+            arcProgress.setProgress(progress);
+            tvPower.setText(electricityP);
+        }
         activity = (DeviceInfoActivity) getActivity();
         EventBus.getDefault().register(this);
         return view;
