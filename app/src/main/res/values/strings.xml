@@ -26,5 +26,9 @@
     <string name="countdown_tips">%s after countdown</string>
     <string name="countdown_timer_on">Countdown timer (on)</string>
     <string name="countdown_timer_off">Countdown timer (off)</string>
+    <string name="modify_device_name_empty">Device name can\'t be blank</string>
+    <string name="success">Success</string>
+    <string name="timeout">Timeout</string>
+    <string name="failed">Failed</string>
 
 </resources>

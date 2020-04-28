@@ -8,13 +8,13 @@ import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.log.LogModule;
 
-public class ReadEnergyParamsTask extends OrderTask {
+public class ReadEnergySavedParamsTask extends OrderTask {
     private static final int ORDERDATA_LENGTH = 3;
 
     public byte[] orderData;
 
-    public ReadEnergyParamsTask(MokoOrderTaskCallback callback) {
-        super(OrderType.READ_CHARACTER, OrderEnum.READ_ENERGY_PARAMS, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public ReadEnergySavedParamsTask(MokoOrderTaskCallback callback) {
+        super(OrderType.READ_CHARACTER, OrderEnum.READ_ENERGY_SAVED_PARAMS, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_READ_SEND;
         orderData[1] = (byte) order.getOrderHeader();
@@ -34,8 +34,8 @@ public class ReadEnergyParamsTask extends OrderTask {
             return;
         final int savedInterval = value[3] & 0xFF;
         MokoSupport.getInstance().energySavedInterval = savedInterval;
-        final int energyChanged = value[4] & 0xFF;
-        MokoSupport.getInstance().energyChanged = energyChanged;
+        final int energyChangedPercent = value[4] & 0xFF;
+        MokoSupport.getInstance().energySavedPercent = energyChangedPercent;
 
 
         LogModule.i(order.getOrderName() + "成功");

@@ -9,8 +9,6 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -187,7 +185,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                     orderTasks.add(mMokoService.readElectricity());
                     orderTasks.add(mMokoService.readEnergyHistory());
                     orderTasks.add(mMokoService.readEnergyHistoryToday());
-                    orderTasks.add(mMokoService.readEnergyParams());
+                    orderTasks.add(mMokoService.readEnergySavedParams());
                     orderTasks.add(mMokoService.readEnergyTotal());
                     orderTasks.add(mMokoService.readFirmwareVersion());
                     orderTasks.add(mMokoService.readLoadState());

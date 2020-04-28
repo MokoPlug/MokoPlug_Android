@@ -51,7 +51,7 @@ public class ReadEnergyHistoryTodayTask extends OrderTask {
                 total = value[3] & 0xFF;
                 byte[] totalTodayBytes = Arrays.copyOfRange(value, 4, 6);
                 final int totalToday = MokoUtils.toInt(totalTodayBytes);
-                MokoSupport.getInstance().eneryTotalToday = totalToday * 0.01f;
+                MokoSupport.getInstance().eneryTotalToday = MokoUtils.getDecimalFormat("0.##").format(totalToday * 0.01f);
                 energyInfos = new ArrayList<>();
                 calendar = Calendar.getInstance();
             }
@@ -68,7 +68,7 @@ public class ReadEnergyHistoryTodayTask extends OrderTask {
                 c.add(Calendar.HOUR_OF_DAY, hour);
                 c.set(Calendar.MINUTE, 0);
                 energyInfo.recordDate = MokoUtils.calendar2StrDate(c, "yyyy-MM-dd HH");
-                energyInfo.value = energy * 0.01f;
+                energyInfo.value = MokoUtils.getDecimalFormat("0.##").format(energy * 0.01f);
                 energyInfos.add(energyInfo);
             }
             MokoSupport.getInstance().energyHistoryToday = energyInfos;

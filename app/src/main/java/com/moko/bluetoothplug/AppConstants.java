@@ -14,8 +14,15 @@ public class AppConstants {
     // extra_key
     // 设备列表
     public static final String EXTRA_KEY_RESPONSE_ORDER_TYPE = "EXTRA_KEY_RESPONSE_ORDER_TYPE";
+    public static final String EXTRA_KEY_DEVICE_NAME = "EXTRA_KEY_DEVICE_NAME";
     // request_code
-    public static final int REQUEST_CODE_TEMP_TARGET = 100;
+    public static final int REQUEST_CODE_MODIFY_NAME = 100;
+    public static final int REQUEST_CODE_MODIFY_POWER_STATUS = 101;
+    public static final int REQUEST_CODE_UPDATE = 102;
+    public static final int REQUEST_CODE_ADV_INTERVAL = 103;
+    public static final int REQUEST_CODE_OVERLOAD_VALUE = 104;
+    public static final int REQUEST_CODE_ENERGY_SAVED_INTERVAL = 105;
+    public static final int REQUEST_CODE_ENERGY_SAVED_PERCENT = 106;
     public static final int REQUEST_CODE_ENABLE_BT = 1001;
 
 

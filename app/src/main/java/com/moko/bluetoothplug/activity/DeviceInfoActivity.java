@@ -1,63 +1,47 @@
 package com.moko.bluetoothplug.activity;
 
 
-import android.app.AlertDialog;
 import android.app.FragmentManager;
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.IdRes;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.moko.bluetoothplug.R;
 import com.moko.bluetoothplug.dialog.AlertMessageDialog;
 import com.moko.bluetoothplug.dialog.LoadingMessageDialog;
 import com.moko.bluetoothplug.fragment.PowerFragment;
+import com.moko.bluetoothplug.fragment.SettingFragment;
 import com.moko.bluetoothplug.fragment.TimerFragment;
-import com.moko.bluetoothplug.service.DfuService;
 import com.moko.bluetoothplug.service.MokoService;
-import com.moko.bluetoothplug.utils.FileUtils;
-import com.moko.bluetoothplug.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
+import com.moko.support.entity.OrderEnum;
 import com.moko.support.event.ConnectStatusEvent;
-import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTask;
+import com.moko.support.task.OrderTaskResponse;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import no.nordicsemi.android.dfu.DfuProgressListener;
-import no.nordicsemi.android.dfu.DfuProgressListenerAdapter;
-import no.nordicsemi.android.dfu.DfuServiceInitiator;
-import no.nordicsemi.android.dfu.DfuServiceListenerHelper;
 
 public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener {
-    public static final int REQUEST_CODE_SELECT_FIRMWARE = 0x10;
 
     @Bind(R.id.frame_container)
     FrameLayout frameContainer;
@@ -77,6 +61,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     private FragmentManager fragmentManager;
     private PowerFragment powerFragment;
     private TimerFragment timerFragment;
+    private SettingFragment settingFragment;
     public String mDeviceMac;
     public String mDeviceName;
     private int validCount;
@@ -102,10 +87,13 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         fragmentManager = getFragmentManager();
         powerFragment = PowerFragment.newInstance();
         timerFragment = TimerFragment.newInstance();
+        settingFragment = SettingFragment.newInstance();
         fragmentManager.beginTransaction()
                 .add(R.id.frame_container, powerFragment)
                 .add(R.id.frame_container, timerFragment)
+                .add(R.id.frame_container, settingFragment)
                 .hide(timerFragment)
+                .hide(settingFragment)
                 .show(powerFragment)
                 .commit();
     }
@@ -139,21 +127,8 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             @Override
             public void run() {
                 if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
-                    if (MokoSupport.getInstance().isBluetoothOpen() && !isUpgrade) {
-                        AlertMessageDialog dialog = new AlertMessageDialog();
-                        dialog.setTitle("Dismiss");
-                        dialog.setMessage("The device disconnected!");
-                        dialog.setConfirm("Exit");
-                        dialog.setCancelGone();
-                        dialog.setOnAlertConfirmListener(new AlertMessageDialog.OnAlertConfirmListener() {
-                            @Override
-                            public void onClick() {
-                                setResult(RESULT_OK);
-                                finish();
-                            }
-                        });
-                        dialog.show(getSupportFragmentManager());
-                    }
+                    setResult(RESULT_OK);
+                    finish();
                 }
             }
         });
@@ -175,54 +150,40 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                     dismissSyncProgressDialog();
                 }
                 if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
+                    OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
+                    OrderEnum order = response.order;
+                    byte[] value = response.responseValue;
+                    switch (order) {
+                        case WRITE_RESET_ENERGY_TOTAL:
+                            settingFragment.resetEnergyTotal();
+                            break;
+                        case WRITE_RESET:
+                            break;
+                    }
                 }
                 if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
                     int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
                     switch (blueState) {
                         case BluetoothAdapter.STATE_TURNING_OFF:
                             dismissSyncProgressDialog();
-                            AlertDialog.Builder builder = new AlertDialog.Builder(DeviceInfoActivity.this);
-                            builder.setTitle("Dismiss");
-                            builder.setCancelable(false);
-                            builder.setMessage("The current system of bluetooth is not available!");
-                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    back();
-                                }
-                            });
-                            builder.show();
+//                            AlertDialog.Builder builder = new AlertDialog.Builder(DeviceInfoActivity.this);
+//                            builder.setTitle("Dismiss");
+//                            builder.setCancelable(false);
+//                            builder.setMessage("The current system of bluetooth is not available!");
+//                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    back();
+//                                }
+//                            });
+//                            builder.show();
+                            finish();
                             break;
                     }
                 }
             }
         }
     };
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_SELECT_FIRMWARE) {
-            if (resultCode == RESULT_OK) {
-                //得到uri，后面就是将uri转化成file的过程。
-                Uri uri = data.getData();
-                String firmwareFilePath = FileUtils.getPath(this, uri);
-                //
-                final File firmwareFile = new File(firmwareFilePath);
-                if (firmwareFile.exists()) {
-                    final DfuServiceInitiator starter = new DfuServiceInitiator(mDeviceMac)
-                            .setDeviceName(mDeviceName)
-                            .setKeepBond(false)
-                            .setDisableNotification(true);
-                    starter.setZip(null, firmwareFilePath);
-                    starter.start(this, DfuService.class);
-                    showDFUProgressDialog("Waiting...");
-                } else {
-                    Toast.makeText(this, "file is not exists!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -260,7 +221,18 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     }
 
     private void back() {
-        MokoSupport.getInstance().disConnectBle();
+        if (MokoSupport.getInstance().isBluetoothOpen()) {
+            AlertMessageDialog dialog = new AlertMessageDialog();
+            dialog.setTitle("Disconnect Device");
+            dialog.setMessage("Please confirm again whether to disconnect the device.");
+            dialog.setOnAlertConfirmListener(new AlertMessageDialog.OnAlertConfirmListener() {
+                @Override
+                public void onClick() {
+                    MokoSupport.getInstance().disConnectBle();
+                }
+            });
+            dialog.show(getSupportFragmentManager());
+        }
     }
 
     @Override
@@ -279,140 +251,25 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                 fragmentManager.beginTransaction()
                         .show(powerFragment)
                         .hide(timerFragment)
+                        .hide(settingFragment)
                         .commit();
                 break;
             case R.id.radioBtn_timer:
                 fragmentManager.beginTransaction()
                         .hide(powerFragment)
                         .show(timerFragment)
+                        .hide(settingFragment)
+                        .commit();
+                break;
+            case R.id.radioBtn_setting:
+                fragmentManager.beginTransaction()
+                        .hide(powerFragment)
+                        .hide(timerFragment)
+                        .show(settingFragment)
                         .commit();
                 break;
         }
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Setting
-    ///////////////////////////////////////////////////////////////////////////
-
-    public void chooseFirmwareFile() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        try {
-            startActivityForResult(Intent.createChooser(intent, "select file first!"), REQUEST_CODE_SELECT_FIRMWARE);
-        } catch (ActivityNotFoundException ex) {
-            ToastUtils.showToast(this, "install file manager app");
-        }
-    }
-
-    private ProgressDialog mDFUDialog;
-
-    private void showDFUProgressDialog(String tips) {
-        mDFUDialog = new ProgressDialog(DeviceInfoActivity.this);
-        mDFUDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mDFUDialog.setCanceledOnTouchOutside(false);
-        mDFUDialog.setCancelable(false);
-        mDFUDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mDFUDialog.setMessage(tips);
-        if (!isFinishing() && mDFUDialog != null && !mDFUDialog.isShowing()) {
-            mDFUDialog.show();
-        }
-    }
-
-    private void dismissDFUProgressDialog() {
-        mDeviceConnectCount = 0;
-        if (!isFinishing() && mDFUDialog != null && mDFUDialog.isShowing()) {
-            mDFUDialog.dismiss();
-        }
-        AlertDialog.Builder builder = new AlertDialog.Builder(DeviceInfoActivity.this);
-        builder.setTitle("Dismiss");
-        builder.setCancelable(false);
-        builder.setMessage("The device disconnected!");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                isUpgrade = false;
-                back();
-            }
-        });
-        builder.show();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        DfuServiceListenerHelper.registerProgressListener(this, mDfuProgressListener);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        DfuServiceListenerHelper.unregisterProgressListener(this, mDfuProgressListener);
-    }
-
-    private int mDeviceConnectCount;
-    private boolean isUpgrade;
-
-    private final DfuProgressListener mDfuProgressListener = new DfuProgressListenerAdapter() {
-        @Override
-        public void onDeviceConnecting(String deviceAddress) {
-            LogModule.w("onDeviceConnecting...");
-            mDeviceConnectCount++;
-            if (mDeviceConnectCount > 3) {
-                Toast.makeText(DeviceInfoActivity.this, "Error:DFU Failed", Toast.LENGTH_SHORT).show();
-                dismissDFUProgressDialog();
-                final LocalBroadcastManager manager = LocalBroadcastManager.getInstance(DeviceInfoActivity.this);
-                final Intent abortAction = new Intent(DfuService.BROADCAST_ACTION);
-                abortAction.putExtra(DfuService.EXTRA_ACTION, DfuService.ACTION_ABORT);
-                manager.sendBroadcast(abortAction);
-            }
-        }
-
-        @Override
-        public void onDeviceDisconnecting(String deviceAddress) {
-            LogModule.w("onDeviceDisconnecting...");
-        }
-
-        @Override
-        public void onDfuProcessStarting(String deviceAddress) {
-            isUpgrade = true;
-            mDFUDialog.setMessage("DfuProcessStarting...");
-        }
-
-
-        @Override
-        public void onEnablingDfuMode(String deviceAddress) {
-            mDFUDialog.setMessage("EnablingDfuMode...");
-        }
-
-        @Override
-        public void onFirmwareValidating(String deviceAddress) {
-            mDFUDialog.setMessage("FirmwareValidating...");
-        }
-
-        @Override
-        public void onDfuCompleted(String deviceAddress) {
-            ToastUtils.showToast(DeviceInfoActivity.this, "DFU Successfully!");
-            dismissDFUProgressDialog();
-        }
-
-        @Override
-        public void onDfuAborted(String deviceAddress) {
-            mDFUDialog.setMessage("DfuAborted...");
-        }
-
-        @Override
-        public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
-            mDFUDialog.setMessage("Progress:" + percent + "%");
-        }
-
-        @Override
-        public void onError(String deviceAddress, int error, int errorType, String message) {
-            ToastUtils.showToast(DeviceInfoActivity.this, "Opps!DFU Failed. Please try again!");
-            LogModule.i("Error:" + message);
-            dismissDFUProgressDialog();
-        }
-    };
 
     ///////////////////////////////////////////////////////////////////////////
     // Power
@@ -432,5 +289,43 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         showSyncingProgressDialog();
         OrderTask orderTask = mMokoService.writeCountdown(countdown);
         MokoSupport.getInstance().sendOrder(orderTask);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Setting
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void resetEnergyConsumption() {
+        AlertMessageDialog dialog = new AlertMessageDialog();
+        dialog.setTitle("Reset Energy Consumption");
+        dialog.setMessage("Please confirm again whether to reset the accumulated electricity? Value will be recounted after clearing.");
+        dialog.setOnAlertConfirmListener(new AlertMessageDialog.OnAlertConfirmListener() {
+            @Override
+            public void onClick() {
+                showSyncingProgressDialog();
+                OrderTask orderTask = mMokoService.writeResetEnergyTotal();
+                MokoSupport.getInstance().sendOrder(orderTask);
+            }
+        });
+        dialog.show(getSupportFragmentManager());
+    }
+
+    public void reset() {
+        AlertMessageDialog dialog = new AlertMessageDialog();
+        dialog.setTitle("Reset Device");
+        dialog.setMessage("After reset,the device will be removed from the device list,and relevant data will be totally cleared");
+        dialog.setOnAlertConfirmListener(new AlertMessageDialog.OnAlertConfirmListener() {
+            @Override
+            public void onClick() {
+                showSyncingProgressDialog();
+                OrderTask orderTask = mMokoService.writeReset();
+                MokoSupport.getInstance().sendOrder(orderTask);
+            }
+        });
+        dialog.show(getSupportFragmentManager());
+    }
+
+    public void changeName() {
+        tvTitle.setText(MokoSupport.getInstance().advName);
     }
 }

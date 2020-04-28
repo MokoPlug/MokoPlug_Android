@@ -37,7 +37,7 @@ public class ReadEnergyTotalTask extends OrderTask {
             return;
         byte[] totalBytes = Arrays.copyOfRange(value, 3, 6);
         final int total = MokoUtils.toInt(totalBytes);
-        MokoSupport.getInstance().eneryTotal = total * 0.01f;
+        MokoSupport.getInstance().eneryTotal = MokoUtils.getDecimalFormat("0.##").format(total * 0.01f);
 
 //        byte[] totalTodayBytes = Arrays.copyOfRange(value, 6, 8);
 //        final int totalToday = MokoUtils.toInt(totalTodayBytes);

@@ -23,7 +23,7 @@ public enum OrderEnum implements Serializable {
     READ_COUNTDOWN("读取累计电能", 0x09),
     READ_FIRMWARE_VERISON("读取固件版本", 0x0A),
     READ_MAC("读取MAC地址", 0x0B),
-    READ_ENERGY_PARAMS("读取累计电能存储参数", 0x0C),
+    READ_ENERGY_SAVED_PARAMS("读取累计电能存储参数", 0x0C),
     READ_ENERGY_HISTORY("读取历史累计电能", 0x0D),
     READ_OVERLOAD_VALUE("读取过载状态", 0x10),
     READ_ENERGY_HISTORY_TODAY("读取当天每小时数据", 0x11),
@@ -36,7 +36,7 @@ public enum OrderEnum implements Serializable {
     WRITE_RESET_ENERGY_TOTAL("重置累计电能", 0x06),
     WRITE_COUNTDOWN("设置倒计时", 0x07),
     WRITE_RESET("恢复出厂设置", 0x08),
-    WRITE_ENERGY_PARAMS("设置累计电能存储参数", 0x09),
+    WRITE_ENERGY_SAVED_PARAMS("设置累计电能存储参数", 0x09),
     WRITE_SYSTEM_TIME("时间同步", 0x0A),
     ;
 

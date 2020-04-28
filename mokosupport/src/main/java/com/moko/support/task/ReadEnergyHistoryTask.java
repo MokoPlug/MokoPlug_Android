@@ -74,7 +74,7 @@ public class ReadEnergyHistoryTask extends OrderTask {
                 Calendar c = (Calendar) calendar.clone();
                 c.add(Calendar.DAY_OF_MONTH, day);
                 energyInfo.recordDate = MokoUtils.calendar2StrDate(c, "yyyy-MM-dd HH");
-                energyInfo.value = energy * 0.01f;
+                energyInfo.value = MokoUtils.getDecimalFormat("0.##").format(energy * 0.01f);
                 energyInfos.add(energyInfo);
             }
             MokoSupport.getInstance().energyHistory = energyInfos;

@@ -21,7 +21,7 @@ import com.moko.support.task.ReadCountdownTask;
 import com.moko.support.task.ReadElectricityTask;
 import com.moko.support.task.ReadEnergyHistoryTask;
 import com.moko.support.task.ReadEnergyHistoryTodayTask;
-import com.moko.support.task.ReadEnergyParamsTask;
+import com.moko.support.task.ReadEnergySavedParamsTask;
 import com.moko.support.task.ReadEnergyTotalTask;
 import com.moko.support.task.ReadFirmwareVersionTask;
 import com.moko.support.task.ReadLoadStateTask;
@@ -33,7 +33,7 @@ import com.moko.support.task.ReadSwitchStateTask;
 import com.moko.support.task.WriteAdvIntervalTask;
 import com.moko.support.task.WriteAdvNameTask;
 import com.moko.support.task.WriteCountdownTask;
-import com.moko.support.task.WriteEnergyParamsTask;
+import com.moko.support.task.WriteEnergySavedParamsTask;
 import com.moko.support.task.WriteOverloadTopValueTask;
 import com.moko.support.task.WritePowerStateTask;
 import com.moko.support.task.WriteResetEnergyTotalTask;
@@ -195,8 +195,8 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
         return task;
     }
 
-    public OrderTask readEnergyParams() {
-        ReadEnergyParamsTask task = new ReadEnergyParamsTask(this);
+    public OrderTask readEnergySavedParams() {
+        ReadEnergySavedParamsTask task = new ReadEnergySavedParamsTask(this);
         return task;
     }
 
@@ -258,8 +258,8 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
         return task;
     }
 
-    public OrderTask writeEnergyParams(int savedInterval, int changed) {
-        WriteEnergyParamsTask task = new WriteEnergyParamsTask(this);
+    public OrderTask writeEnergySavedParams(int savedInterval, int changed) {
+        WriteEnergySavedParamsTask task = new WriteEnergySavedParamsTask(this);
         task.setData(savedInterval, changed);
         return task;
     }

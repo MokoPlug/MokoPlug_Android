@@ -357,15 +357,15 @@ public class MokoSupport implements MokoResponseCallback {
                         calendar.set(Calendar.HOUR_OF_DAY, hour);
                         byte[] totalBytes = Arrays.copyOfRange(value, 8, 11);
                         final int total = MokoUtils.toInt(totalBytes);
-                        this.eneryTotal = total * 0.01f;
+                        this.eneryTotal = MokoUtils.getDecimalFormat("0.##").format(total * 0.01f);
 
                         byte[] totalTodayBytes = Arrays.copyOfRange(value, 11, 13);
                         final int totalToday = MokoUtils.toInt(totalTodayBytes);
-                        this.eneryTotalToday = totalToday * 0.01f;
+                        this.eneryTotalToday = MokoUtils.getDecimalFormat("0.##").format(totalToday * 0.01f);
 
                         byte[] currentBytes = Arrays.copyOfRange(value, 13, 15);
                         final int current = MokoUtils.toInt(currentBytes);
-                        float energyCurrent = current * 0.01f;
+                        String energyCurrent = MokoUtils.getDecimalFormat("0.##").format(current * 0.01f);
 
                         energyInfo.recordDate = MokoUtils.calendar2StrDate(calendar, "yyyy-MM-dd HH");
                         energyInfo.value = energyCurrent;
@@ -652,8 +652,8 @@ public class MokoSupport implements MokoResponseCallback {
     ///////////////////////////////////////////////////////////////////////////
     //
     ///////////////////////////////////////////////////////////////////////////
-
     public String advName;
+
     public int advInterval;
     public int switchState;
     public int powerState;
@@ -662,13 +662,13 @@ public class MokoSupport implements MokoResponseCallback {
     public String electricityV;
     public String electricityC;
     public String electricityP;
-    public float eneryTotal;
-    public float eneryTotalToday;
+    public String eneryTotal;
+    public String eneryTotalToday;
     public int countDown;
     public String firmwareVersion;
     public String mac;
     public int energySavedInterval;
-    public int energyChanged;
+    public int energySavedPercent;
     public List<EnergyInfo> energyHistory;
     public List<EnergyInfo> energyHistoryToday;
     public int overloadValue;
