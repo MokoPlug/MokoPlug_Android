@@ -48,6 +48,8 @@ public class EnergySavedIntervalActivity extends BaseActivity {
         etEnergySavedInterval.setText(String.valueOf(energySavedInterval));
         etEnergySavedInterval.setSelection(String.valueOf(energySavedInterval).length());
 
+        getFocuable(etEnergySavedInterval);
+
         Intent intent = new Intent(this, MokoService.class);
         bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
@@ -155,7 +157,7 @@ public class EnergySavedIntervalActivity extends BaseActivity {
                 }
                 showSyncingProgressDialog();
                 int energySavedPercent = MokoSupport.getInstance().energySavedPercent;
-                mMokoService.writeEnergySavedParams(interval,energySavedPercent);
+                MokoSupport.getInstance().sendOrder(mMokoService.writeEnergySavedParams(interval,energySavedPercent));
                 break;
         }
     }

@@ -29,7 +29,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class ModifyPowerStatusActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener {
 
@@ -152,15 +151,6 @@ public class ModifyPowerStatusActivity extends BaseActivity implements RadioGrou
         }
     };
 
-    @OnClick({R.id.tv_back})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.tv_back:
-                finish();
-                break;
-        }
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -203,6 +193,10 @@ public class ModifyPowerStatusActivity extends BaseActivity implements RadioGrou
                 break;
         }
         showSyncingProgressDialog();
-        mMokoService.writePowerState(powerState);
+        MokoSupport.getInstance().sendOrder(mMokoService.writePowerState(powerState));
+    }
+
+    public void back(View view) {
+        finish();
     }
 }

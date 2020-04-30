@@ -30,7 +30,7 @@ public class ReadEnergySavedParamsTask extends OrderTask {
     public void parseValue(byte[] value) {
         if (order.getOrderHeader() != (value[1] & 0xFF))
             return;
-        if (0x06 != (value[2] & 0xFF))
+        if (0x02 != (value[2] & 0xFF))
             return;
         final int savedInterval = value[3] & 0xFF;
         MokoSupport.getInstance().energySavedInterval = savedInterval;

@@ -22,10 +22,12 @@ import android.widget.TextView;
 import com.moko.bluetoothplug.R;
 import com.moko.bluetoothplug.dialog.AlertMessageDialog;
 import com.moko.bluetoothplug.dialog.LoadingMessageDialog;
+import com.moko.bluetoothplug.fragment.EnergyFragment;
 import com.moko.bluetoothplug.fragment.PowerFragment;
 import com.moko.bluetoothplug.fragment.SettingFragment;
 import com.moko.bluetoothplug.fragment.TimerFragment;
 import com.moko.bluetoothplug.service.MokoService;
+import com.moko.bluetoothplug.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderEnum;
@@ -60,6 +62,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     public MokoService mMokoService;
     private FragmentManager fragmentManager;
     private PowerFragment powerFragment;
+    private EnergyFragment energyFragment;
     private TimerFragment timerFragment;
     private SettingFragment settingFragment;
     public String mDeviceMac;
@@ -86,15 +89,18 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     private void initFragment() {
         fragmentManager = getFragmentManager();
         powerFragment = PowerFragment.newInstance();
+        energyFragment = EnergyFragment.newInstance();
         timerFragment = TimerFragment.newInstance();
         settingFragment = SettingFragment.newInstance();
         fragmentManager.beginTransaction()
                 .add(R.id.frame_container, powerFragment)
+                .add(R.id.frame_container, energyFragment)
                 .add(R.id.frame_container, timerFragment)
                 .add(R.id.frame_container, settingFragment)
+                .show(powerFragment)
+                .hide(energyFragment)
                 .hide(timerFragment)
                 .hide(settingFragment)
-                .show(powerFragment)
                 .commit();
     }
 
@@ -154,6 +160,13 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                     OrderEnum order = response.order;
                     byte[] value = response.responseValue;
                     switch (order) {
+//                        case WRITE_SWITCH_STATE:
+//                            if (0x00 == (value[3] & 0xFF)) {
+//                                powerFragment.changePowerState();
+//                            } else {
+//                                ToastUtils.showToast(DeviceInfoActivity.this, "Error");
+//                            }
+//                            break;
                         case WRITE_RESET_ENERGY_TOTAL:
                             settingFragment.resetEnergyTotal();
                             break;
@@ -211,11 +224,14 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             mLoadingMessageDialog.dismissAllowingStateLoss();
     }
 
-    @OnClick({R.id.tv_back})
+    @OnClick({R.id.tv_back, R.id.iv_more})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_back:
                 back();
+                break;
+            case R.id.iv_more:
+                startActivity(new Intent(this, MoreActivity.class));
                 break;
         }
     }
@@ -250,6 +266,15 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             case R.id.radioBtn_power:
                 fragmentManager.beginTransaction()
                         .show(powerFragment)
+                        .hide(energyFragment)
+                        .hide(timerFragment)
+                        .hide(settingFragment)
+                        .commit();
+                break;
+            case R.id.radioBtn_energy:
+                fragmentManager.beginTransaction()
+                        .hide(powerFragment)
+                        .show(energyFragment)
                         .hide(timerFragment)
                         .hide(settingFragment)
                         .commit();
@@ -257,6 +282,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             case R.id.radioBtn_timer:
                 fragmentManager.beginTransaction()
                         .hide(powerFragment)
+                        .hide(energyFragment)
                         .show(timerFragment)
                         .hide(settingFragment)
                         .commit();
@@ -264,6 +290,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             case R.id.radioBtn_setting:
                 fragmentManager.beginTransaction()
                         .hide(powerFragment)
+                        .hide(energyFragment)
                         .hide(timerFragment)
                         .show(settingFragment)
                         .commit();
@@ -277,7 +304,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
 
     public void changeSwitchState(boolean switchState) {
         showSyncingProgressDialog();
-        OrderTask orderTask = mMokoService.writeSwitchState(switchState ? 0 : 1);
+        OrderTask orderTask = mMokoService.writeSwitchState(switchState ? 1 : 0);
         MokoSupport.getInstance().sendOrder(orderTask);
     }
 

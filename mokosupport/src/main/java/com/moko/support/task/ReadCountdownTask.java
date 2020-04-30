@@ -33,11 +33,14 @@ public class ReadCountdownTask extends OrderTask {
     public void parseValue(byte[] value) {
         if (order.getOrderHeader() != (value[1] & 0xFF))
             return;
-        if (0x05 != (value[2] & 0xFF))
+        if (0x09 != (value[2] & 0xFF))
             return;
 
         if (0x01 == (value[3] & 0xFF)) {
-            byte[] countDownBytes = Arrays.copyOfRange(value, 4, 8);
+            byte[] countDownInitBytes = Arrays.copyOfRange(value, 4, 8);
+            final int countDownInit = MokoUtils.toInt(countDownInitBytes);
+            MokoSupport.getInstance().countDownInit = countDownInit;
+            byte[] countDownBytes = Arrays.copyOfRange(value, 8, 12);
             final int countDown = MokoUtils.toInt(countDownBytes);
             MokoSupport.getInstance().countDown = countDown;
         }

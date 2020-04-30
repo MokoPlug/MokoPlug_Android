@@ -50,6 +50,8 @@ public class AdvIntervalActivity extends BaseActivity {
         etAdvInterval.setText(String.valueOf(advInterval));
         etAdvInterval.setSelection(String.valueOf(advInterval).length());
 
+        getFocuable(etAdvInterval);
+
         Intent intent = new Intent(this, MokoService.class);
         bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
@@ -156,7 +158,7 @@ public class AdvIntervalActivity extends BaseActivity {
                     return;
                 }
                 showSyncingProgressDialog();
-                mMokoService.writeAdvInterval(interval);
+                MokoSupport.getInstance().sendOrder(mMokoService.writeAdvInterval(interval));
                 break;
         }
     }

@@ -49,7 +49,7 @@ public class WriteSystemTimeTask extends OrderTask {
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
-
+        response.responseValue = value;
         MokoSupport.getInstance().pollTask();
         callback.onOrderResult(response);
         MokoSupport.getInstance().executeTask(callback);

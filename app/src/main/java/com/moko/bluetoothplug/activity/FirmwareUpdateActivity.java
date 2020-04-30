@@ -46,6 +46,7 @@ public class FirmwareUpdateActivity extends BaseActivity {
     TextView tvFirmwareVersion;
     @Bind(R.id.tv_firmware_path)
     TextView tvFirmwarePath;
+    private boolean isUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +61,16 @@ public class FirmwareUpdateActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
     public void onConnectStatusEvent(ConnectStatusEvent event) {
+        EventBus.getDefault().cancelEventDelivery(event);
         final String action = event.getAction();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
                     if (MokoSupport.getInstance().isBluetoothOpen()) {
+                        if (isUpdate) {
+                            return;
+                        }
                         finish();
                     }
                 }
@@ -90,6 +95,7 @@ public class FirmwareUpdateActivity extends BaseActivity {
                     starter.setZip(null, firmwareFilePath);
                     starter.start(this, DfuService.class);
                     showDFUProgressDialog("Waiting...");
+                    isUpdate = true;
                 } else {
                     ToastUtils.showToast(this, "file is not exists!");
                 }
@@ -152,6 +158,7 @@ public class FirmwareUpdateActivity extends BaseActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                setResult(RESULT_OK);
                 finish();
             }
         });
@@ -199,6 +206,7 @@ public class FirmwareUpdateActivity extends BaseActivity {
         @Override
         public void onDfuCompleted(String deviceAddress) {
             ToastUtils.showToast(FirmwareUpdateActivity.this, "DFU Successfully!");
+            isUpdate = !isUpdate;
             dismissDFUProgressDialog();
         }
 
@@ -216,6 +224,7 @@ public class FirmwareUpdateActivity extends BaseActivity {
         public void onError(String deviceAddress, int error, int errorType, String message) {
             ToastUtils.showToast(FirmwareUpdateActivity.this, "Opps!DFU Failed. Please try again!");
             LogModule.i("Error:" + message);
+            isUpdate = !isUpdate;
             dismissDFUProgressDialog();
         }
     };

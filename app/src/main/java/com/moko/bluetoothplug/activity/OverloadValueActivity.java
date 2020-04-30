@@ -48,6 +48,8 @@ public class OverloadValueActivity extends BaseActivity {
         etOverloadValue.setText(String.valueOf(overloadTopValue));
         etOverloadValue.setSelection(String.valueOf(overloadTopValue).length());
 
+        getFocuable(etOverloadValue);
+
         Intent intent = new Intent(this, MokoService.class);
         bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
@@ -154,7 +156,7 @@ public class OverloadValueActivity extends BaseActivity {
                     return;
                 }
                 showSyncingProgressDialog();
-                mMokoService.writeAdvInterval(value);
+                MokoSupport.getInstance().sendOrder(mMokoService.writeAdvInterval(value));
                 break;
         }
     }

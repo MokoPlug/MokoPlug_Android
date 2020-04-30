@@ -3,6 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_ffffff"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -39,7 +41,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
         android:background="@drawable/shape_edit_bg"
-        android:focusable="true"
+        android:gravity="center"
         android:inputType="number"
         android:maxLength="3"
         android:paddingLeft="12dp"

@@ -32,7 +32,7 @@ public class ReadMacTask extends OrderTask {
             return;
         if (0x06 != (value[2] & 0xFF))
             return;
-        final String mac = String.format("%%02X:%%02X:%%02X:%%02X:%%02X:%%02X", value[3], value[4], value[5], value[6], value[7], value[8]);
+        final String mac = String.format("%02X:%02X:%02X:%02X:%02X:%02X", value[3], value[4], value[5], value[6], value[7], value[8]);
         MokoSupport.getInstance().mac = mac;
 
         LogModule.i(order.getOrderName() + "成功");

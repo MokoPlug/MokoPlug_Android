@@ -75,16 +75,19 @@ public class PowerFragment extends Fragment {
             switchState = false;
             cvOnoff.setCardBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white_ffffff));
             tvOnoff.setTextColor(ContextCompat.getColor(getActivity(), R.color.blue_2681ff));
+            tvOnoff.setText("OFF");
         } else {
             switchState = true;
             cvOnoff.setCardBackgroundColor(ContextCompat.getColor(getActivity(), R.color.blue_2681ff));
             tvOnoff.setTextColor(ContextCompat.getColor(getActivity(), R.color.white_ffffff));
+            tvOnoff.setText("ON");
         }
     }
 
     private void setOverLoad() {
         cvOnoff.setCardBackgroundColor(ContextCompat.getColor(getActivity(), R.color.grey_d9d9d9));
         tvOnoff.setTextColor(ContextCompat.getColor(getActivity(), R.color.white_ffffff));
+        tvOnoff.setText("OFF");
         cvOnoff.setEnabled(false);
         tvOverload.setVisibility(View.VISIBLE);
     }
@@ -158,8 +161,15 @@ public class PowerFragment extends Fragment {
 //                tvPower.setText(String.valueOf(electricityP));
                 break;
             case R.id.cv_onoff:
+                switchState = !switchState;
                 activity.changeSwitchState(switchState);
                 break;
         }
     }
+
+//    public void changePowerState() {
+//        MokoSupport.getInstance().switchState = switchState ? 1 : 0;
+//        int onoff = switchState ? 1 : 0;
+//        setOnOff(onoff);
+//    }
 }

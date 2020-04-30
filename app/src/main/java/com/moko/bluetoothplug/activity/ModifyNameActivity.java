@@ -13,6 +13,7 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.moko.bluetoothplug.R;
@@ -63,6 +64,8 @@ public class ModifyNameActivity extends BaseActivity {
         String deviceName = MokoSupport.getInstance().advName;
         etDeviceName.setText(deviceName);
         etDeviceName.setSelection(deviceName.length());
+
+        getFocuable(etDeviceName);
 
         Intent intent = new Intent(this, MokoService.class);
         bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
@@ -165,7 +168,7 @@ public class ModifyNameActivity extends BaseActivity {
                     return;
                 }
                 showSyncingProgressDialog();
-                mMokoService.writeAdvName(deviceName);
+                MokoSupport.getInstance().sendOrder(mMokoService.writeAdvName(deviceName));
                 break;
         }
     }

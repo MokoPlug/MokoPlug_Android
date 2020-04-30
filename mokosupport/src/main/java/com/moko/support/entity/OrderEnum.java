@@ -11,6 +11,7 @@ import java.io.Serializable;
 public enum OrderEnum implements Serializable {
     READ_NOTIFY("打开读取通知", 0),
     WRITE_NOTIFY("打开设置通知", 0),
+    NOTIFY("打开通知", 0),
 
     READ_ADV_NAME("读取广播名字", 0x01),
     READ_ADV_INTERVAL("读取广播间隔", 0x02),
@@ -20,7 +21,7 @@ public enum OrderEnum implements Serializable {
     READ_OVERLOAD_TOP_VALUE("读取过载保护值", 0x06),
     READ_ELECTRICITY_VALUE("读取电压电流功率值", 0x07),
     READ_ENERGY_TOTAL("读取累计电能", 0x08),
-    READ_COUNTDOWN("读取累计电能", 0x09),
+    READ_COUNTDOWN("读取倒计时", 0x09),
     READ_FIRMWARE_VERISON("读取固件版本", 0x0A),
     READ_MAC("读取MAC地址", 0x0B),
     READ_ENERGY_SAVED_PARAMS("读取累计电能存储参数", 0x0C),

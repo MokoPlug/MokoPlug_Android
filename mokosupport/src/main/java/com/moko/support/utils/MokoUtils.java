@@ -147,9 +147,9 @@ public class MokoUtils {
         int iOutcome = 0;
         byte bLoop;
 
-        for (int i = 0; i < bRefArr.length; i++) {
+        for (int i = 0, length = bRefArr.length; i < length; i++) {
             bLoop = bRefArr[i];
-            iOutcome += (bLoop & 0xFF) << (8 * i);
+            iOutcome += (bLoop & 0xFF) << (8 * (length - 1 - i));
         }
         return iOutcome;
     }

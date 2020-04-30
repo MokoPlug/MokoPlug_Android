@@ -63,6 +63,7 @@ public class ReadEnergyHistoryTask extends OrderTask {
                 calendar.set(Calendar.MINUTE, minute);
             }
         }
+        int eneryTotalMonth = 0;
         if (0x0E == (value[1] & 0xFF)) {
             int count = (value[2] & 0xFF) / 3;
             for (int i = 0; i < count; i++) {
@@ -74,10 +75,15 @@ public class ReadEnergyHistoryTask extends OrderTask {
                 Calendar c = (Calendar) calendar.clone();
                 c.add(Calendar.DAY_OF_MONTH, day);
                 energyInfo.recordDate = MokoUtils.calendar2StrDate(c, "yyyy-MM-dd HH");
+                energyInfo.type = 1;
+                energyInfo.date = energyInfo.recordDate.substring(5, 10);
                 energyInfo.value = MokoUtils.getDecimalFormat("0.##").format(energy * 0.01f);
+                energyInfo.energy = energy;
+                eneryTotalMonth += energy;
                 energyInfos.add(energyInfo);
             }
             MokoSupport.getInstance().energyHistory = energyInfos;
+            MokoSupport.getInstance().eneryTotalMonthly = MokoUtils.getDecimalFormat("0.##").format(eneryTotalMonth * 0.01f);
             if (total <= 0) {
                 orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
                 MokoSupport.getInstance().pollTask();

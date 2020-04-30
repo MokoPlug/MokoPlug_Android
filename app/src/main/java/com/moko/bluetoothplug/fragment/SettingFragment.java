@@ -195,6 +195,11 @@ public class SettingFragment extends Fragment {
                 tvEnergySavedPercent.setText(String.valueOf(energySavedPercent));
             }
         }
+        if (requestCode == AppConstants.REQUEST_CODE_UPDATE) {
+            if (resultCode == getActivity().RESULT_OK) {
+                activity.finish();
+            }
+        }
     }
 
     public void resetEnergyTotal() {

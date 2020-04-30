@@ -35,8 +35,10 @@ import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.callback.MokoScanDeviceCallback;
 import com.moko.support.entity.DeviceInfo;
+import com.moko.support.entity.OrderEnum;
 import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.task.OrderTask;
+import com.moko.support.task.OrderTaskResponse;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -133,9 +135,10 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                 }
                 if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
                     dismissLoadingMessageDialog();
-
+                    startActivity(new Intent(MainActivity.this, DeviceInfoActivity.class));
                 }
                 if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
+
                 }
                 if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
                     int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
@@ -282,7 +285,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         final PlugInfo plugInfo = plugInfoParseable.parseDeviceInfo(deviceInfo);
         if (plugInfo == null)
             return;
-        plugInfoHashMap.put(String.valueOf(plugInfo.rssi), plugInfo);
+        plugInfoHashMap.put(plugInfo.mac, plugInfo);
     }
 
     @Override

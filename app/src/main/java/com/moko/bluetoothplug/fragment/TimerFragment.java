@@ -58,7 +58,11 @@ public class TimerFragment extends Fragment {
                     int minute = (countdown % 3600) / 60;
                     int second = (countdown % 3600) % 60;
                     tvTimer.setText(String.format("%02d:%02d:%02d", hour, minute, second));
+                    int countDownInit = MokoSupport.getInstance().countDownInit;
+                    int progress = Math.round(maxProgress - maxProgress / countDownInit * countdown);
+                    circularProgress.setProgress(progress);
                 } else {
+                    circularProgress.setProgress(36);
                     tvCountdownTips.setVisibility(View.GONE);
                     tvTimer.setText("00:00:00");
                 }
@@ -87,7 +91,9 @@ public class TimerFragment extends Fragment {
             int minute = (countdown % 3600) / 60;
             int second = (countdown % 3600) % 60;
             tvTimer.setText(String.format("%02d:%02d:%02d", hour, minute, second));
-            // TODO: 2020/4/25 需要协议提供倒计时开始的时间，计算比例后才能显示进度
+            int countDownInit = MokoSupport.getInstance().countDownInit;
+            int progress = Math.round(maxProgress - maxProgress / countDownInit * countdown);
+            circularProgress.setProgress(progress);
         }
         activity = (DeviceInfoActivity) getActivity();
         EventBus.getDefault().register(this);
@@ -120,8 +126,8 @@ public class TimerFragment extends Fragment {
         super.onDestroy();
     }
 
-    int countdown = 0;
-    int count = 0;
+//    int countdown = 0;
+//    int count = 0;
     final float maxProgress = 36.0f;
 
     @OnClick({R.id.circular_progress, R.id.cv_timer})
@@ -155,19 +161,18 @@ public class TimerFragment extends Fragment {
         }
     }
 
-    private void countdown() {
-        tvTimer.setText(String.valueOf(countdown));
-        int progress = Math.round(maxProgress - maxProgress / count * countdown);
-        circularProgress.setProgress(progress);
-        if (countdown <= 0)
-            return;
-        tvTimer.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                countdown--;
-                countdown();
-            }
-        }, 1000);
-
-    }
+//    private void countdown() {
+//        tvTimer.setText(String.valueOf(countdown));
+//        int progress = Math.round(maxProgress - maxProgress / count * countdown);
+//        circularProgress.setProgress(progress);
+//        if (countdown <= 0)
+//            return;
+//        tvTimer.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                countdown--;
+//                countdown();
+//            }
+//        }, 1000);
+//    }
 }
