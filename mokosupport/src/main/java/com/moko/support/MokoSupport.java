@@ -307,7 +307,8 @@ public class MokoSupport implements MokoResponseCallback {
                 case 2:
                     if (length != 1)
                         return;
-                    event.setFunction(MokoConstants.NOTIFY_FUNCTION_LOAD);
+                    if (1 == (value[3] & 0xFF))
+                        event.setFunction(MokoConstants.NOTIFY_FUNCTION_LOAD);
                     break;
                 case 3:
                     if (length != 2)
@@ -360,15 +361,15 @@ public class MokoSupport implements MokoResponseCallback {
                     final int total = MokoUtils.toInt(totalBytes);
                     this.eneryTotal = MokoUtils.getDecimalFormat("0.##").format(total * 0.01f);
 
-                    byte[] totalMonthlyBytes = Arrays.copyOfRange(value, 11, 13);
+                    byte[] totalMonthlyBytes = Arrays.copyOfRange(value, 11, 14);
                     final int totalMonthly = MokoUtils.toInt(totalMonthlyBytes);
                     this.eneryTotalMonthly = MokoUtils.getDecimalFormat("0.##").format(totalMonthly * 0.01f);
 
-                    byte[] totalTodayBytes = Arrays.copyOfRange(value, 13, 15);
+                    byte[] totalTodayBytes = Arrays.copyOfRange(value, 14, 16);
                     final int totalToday = MokoUtils.toInt(totalTodayBytes);
                     this.eneryTotalToday = MokoUtils.getDecimalFormat("0.##").format(totalToday * 0.01f);
 
-                    byte[] currentBytes = Arrays.copyOfRange(value, 15, 17);
+                    byte[] currentBytes = Arrays.copyOfRange(value, 16, 18);
                     final int current = MokoUtils.toInt(currentBytes);
                     String energyCurrent = MokoUtils.getDecimalFormat("0.##").format(current * 0.01f);
 
@@ -378,7 +379,7 @@ public class MokoSupport implements MokoResponseCallback {
                     energyInfo.value = energyCurrent;
                     if (energyHistory != null) {
                         EnergyInfo first = energyHistory.get(0);
-                        if (energyInfo.recordDate.equals(first.recordDate)) {
+                        if (energyInfo.date.equals(first.date)) {
                             first.value = energyCurrent;
                         } else {
                             energyInfo.type = 1;

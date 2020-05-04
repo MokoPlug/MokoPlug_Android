@@ -72,7 +72,6 @@ public class EnergyFragment extends Fragment implements RadioGroup.OnCheckedChan
                 } else {
                     tvEnergyTotal.setText(MokoSupport.getInstance().eneryTotalMonthly);
                     List<EnergyInfo> energyHistory = MokoSupport.getInstance().energyHistory;
-                    adapter = new EnergyListAdapter();
                     adapter.replaceData(energyHistory);
                 }
         }

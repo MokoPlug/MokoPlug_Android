@@ -13,6 +13,7 @@ import com.moko.support.utils.MokoUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 public class ReadEnergyHistoryTask extends OrderTask {
@@ -82,6 +83,7 @@ public class ReadEnergyHistoryTask extends OrderTask {
                 eneryTotalMonth += energy;
                 energyInfos.add(energyInfo);
             }
+            Collections.reverse(energyInfos);
             MokoSupport.getInstance().energyHistory = energyInfos;
             MokoSupport.getInstance().eneryTotalMonthly = MokoUtils.getDecimalFormat("0.##").format(eneryTotalMonth * 0.01f);
             if (total <= 0) {

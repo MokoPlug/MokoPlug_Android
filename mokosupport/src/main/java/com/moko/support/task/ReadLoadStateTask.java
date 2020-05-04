@@ -33,7 +33,7 @@ public class ReadLoadStateTask extends OrderTask {
         if (0x01 != (value[2] & 0xFF))
             return;
         final int overLoadState = value[3] & 0xFF;
-        MokoSupport.getInstance().overloadState = overLoadState;
+//        MokoSupport.getInstance().overloadState = overLoadState;
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;

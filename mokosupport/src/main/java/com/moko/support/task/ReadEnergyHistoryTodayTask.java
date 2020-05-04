@@ -13,6 +13,7 @@ import com.moko.support.utils.MokoUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 public class ReadEnergyHistoryTodayTask extends OrderTask {
@@ -76,6 +77,7 @@ public class ReadEnergyHistoryTodayTask extends OrderTask {
                 energyInfo.energy = energy;
                 energyInfos.add(energyInfo);
             }
+            Collections.reverse(energyInfos);
             MokoSupport.getInstance().energyHistoryToday = energyInfos;
             if (total <= 0) {
                 orderStatus = OrderTask.ORDER_STATUS_SUCCESS;

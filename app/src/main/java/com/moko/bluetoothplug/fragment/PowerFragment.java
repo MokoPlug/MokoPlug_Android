@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.moko.bluetoothplug.R;
 import com.moko.bluetoothplug.activity.DeviceInfoActivity;
+import com.moko.bluetoothplug.utils.ToastUtils;
 import com.moko.bluetoothplug.view.ArcProgress;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -60,6 +61,9 @@ public class PowerFragment extends Fragment {
                 break;
             case MokoConstants.NOTIFY_FUNCTION_OVERLOAD:
                 setOverLoad();
+                break;
+            case MokoConstants.NOTIFY_FUNCTION_LOAD:
+                ToastUtils.showToast(getActivity(), "load insertion");
                 break;
             case MokoConstants.NOTIFY_FUNCTION_ELECTRICITY:
                 String electricityP = MokoSupport.getInstance().electricityP;
