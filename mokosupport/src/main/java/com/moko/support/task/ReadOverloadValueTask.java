@@ -36,8 +36,11 @@ public class ReadOverloadValueTask extends OrderTask {
         if (0x03 != (value[2] & 0xFF))
             return;
         if (0x01 == (value[3] & 0xFF)) {
+            MokoSupport.getInstance().overloadState = 1;
             byte[] overloadBytes = Arrays.copyOfRange(value, 4, 6);
             MokoSupport.getInstance().overloadValue = MokoUtils.toInt(overloadBytes);
+        } else {
+            MokoSupport.getInstance().overloadState = 0;
         }
 
         LogModule.i(order.getOrderName() + "成功");

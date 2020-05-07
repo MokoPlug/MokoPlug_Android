@@ -313,8 +313,7 @@ public class MokoSupport implements MokoResponseCallback {
                 case 3:
                     if (length != 2)
                         return;
-                    final int overLoadState = value[3] & 0xFF;
-                    this.overloadState = overLoadState;
+                    this.overloadState = 1;
                     event.setFunction(MokoConstants.NOTIFY_FUNCTION_OVERLOAD);
                     break;
                 case 4:
@@ -380,9 +379,10 @@ public class MokoSupport implements MokoResponseCallback {
                     if (energyHistory != null) {
                         EnergyInfo first = energyHistory.get(0);
                         if (energyInfo.date.equals(first.date)) {
-                            first.value = energyCurrent;
+                            first.value = eneryTotalToday;
                         } else {
                             energyInfo.type = 1;
+                            energyInfo.recordDate = eneryTotalToday;
                             energyHistory.add(0, energyInfo);
                         }
                     } else {

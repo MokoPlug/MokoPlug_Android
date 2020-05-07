@@ -77,9 +77,10 @@ public class ReadEnergyHistoryTodayTask extends OrderTask {
                 energyInfo.energy = energy;
                 energyInfos.add(energyInfo);
             }
-            Collections.reverse(energyInfos);
-            MokoSupport.getInstance().energyHistoryToday = energyInfos;
             if (total <= 0) {
+                Collections.reverse(energyInfos);
+                MokoSupport.getInstance().energyHistoryToday = energyInfos;
+
                 orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
                 MokoSupport.getInstance().pollTask();
                 callback.onOrderResult(response);

@@ -83,10 +83,11 @@ public class ReadEnergyHistoryTask extends OrderTask {
                 eneryTotalMonth += energy;
                 energyInfos.add(energyInfo);
             }
-            Collections.reverse(energyInfos);
-            MokoSupport.getInstance().energyHistory = energyInfos;
-            MokoSupport.getInstance().eneryTotalMonthly = MokoUtils.getDecimalFormat("0.##").format(eneryTotalMonth * 0.01f);
             if (total <= 0) {
+                Collections.reverse(energyInfos);
+                MokoSupport.getInstance().energyHistory = energyInfos;
+                MokoSupport.getInstance().eneryTotalMonthly = MokoUtils.getDecimalFormat("0.##").format(eneryTotalMonth * 0.01f);
+
                 orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
                 MokoSupport.getInstance().pollTask();
                 callback.onOrderResult(response);

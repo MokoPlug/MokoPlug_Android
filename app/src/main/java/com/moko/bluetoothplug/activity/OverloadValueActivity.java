@@ -156,7 +156,7 @@ public class OverloadValueActivity extends BaseActivity {
                     return;
                 }
                 showSyncingProgressDialog();
-                MokoSupport.getInstance().sendOrder(mMokoService.writeAdvInterval(value));
+                MokoSupport.getInstance().sendOrder(mMokoService.writeOverloadTopValue(value));
                 break;
         }
     }

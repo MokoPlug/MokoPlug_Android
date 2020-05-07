@@ -45,9 +45,9 @@ public class EnergySavedPercentActivity extends BaseActivity {
         setContentView(R.layout.activity_energy_saved_percent);
         ButterKnife.bind(this);
 
-        int energySavedInterval = MokoSupport.getInstance().energySavedInterval;
-        etEnergySavedPercent.setText(String.valueOf(energySavedInterval));
-        etEnergySavedPercent.setSelection(String.valueOf(energySavedInterval).length());
+        int energySavedPercent = MokoSupport.getInstance().energySavedPercent;
+        etEnergySavedPercent.setText(String.valueOf(energySavedPercent));
+        etEnergySavedPercent.setSelection(String.valueOf(energySavedPercent).length());
 
         getFocuable(etEnergySavedPercent);
 
