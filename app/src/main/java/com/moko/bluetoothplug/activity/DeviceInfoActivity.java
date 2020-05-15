@@ -169,6 +169,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
 //                            break;
                         case WRITE_RESET_ENERGY_TOTAL:
                             settingFragment.resetEnergyTotal();
+                            energyFragment.resetEnergyData();
                             break;
                         case WRITE_RESET:
                             break;
@@ -340,7 +341,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     public void reset() {
         AlertMessageDialog dialog = new AlertMessageDialog();
         dialog.setTitle("Reset Device");
-        dialog.setMessage("After reset,the device will be removed from the device list,and relevant data will be totally cleared");
+        dialog.setMessage("After reset,the relevant data will be totally cleared");
         dialog.setOnAlertConfirmListener(new AlertMessageDialog.OnAlertConfirmListener() {
             @Override
             public void onClick() {

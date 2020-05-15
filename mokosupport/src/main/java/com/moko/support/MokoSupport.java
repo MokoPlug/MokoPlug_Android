@@ -32,6 +32,7 @@ import com.moko.support.utils.MokoUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -138,6 +139,7 @@ public class MokoSupport implements MokoResponseCallback {
         }
         if (isConnDevice(context, address)) {
             LogModule.w("connDevice: 设备已连接");
+            disConnectBle();
             return;
         }
         final MokoConnStateHandler gattCallback = MokoConnStateHandler.getInstance();
@@ -344,7 +346,7 @@ public class MokoSupport implements MokoResponseCallback {
                     event.setFunction(MokoConstants.NOTIFY_FUNCTION_ELECTRICITY);
                     break;
                 case 6:
-                    if (length != 15)
+                    if (length != 17)
                         return;
                     EnergyInfo energyInfo = new EnergyInfo();
                     int year = MokoUtils.toInt(Arrays.copyOfRange(value, 3, 5));
@@ -356,21 +358,21 @@ public class MokoSupport implements MokoResponseCallback {
                     calendar.set(Calendar.MONTH, month - 1);
                     calendar.set(Calendar.DAY_OF_MONTH, day);
                     calendar.set(Calendar.HOUR_OF_DAY, hour);
-                    byte[] totalBytes = Arrays.copyOfRange(value, 8, 11);
-                    final int total = MokoUtils.toInt(totalBytes);
-                    this.eneryTotal = MokoUtils.getDecimalFormat("0.##").format(total * 0.01f);
+                    byte[] totalBytes = Arrays.copyOfRange(value, 8, 12);
+                    long total = MokoUtils.longFrom8Bytes(totalBytes);
+                    this.eneryTotal = total;
 
-                    byte[] totalMonthlyBytes = Arrays.copyOfRange(value, 11, 14);
+                    byte[] totalMonthlyBytes = Arrays.copyOfRange(value, 12, 15);
                     final int totalMonthly = MokoUtils.toInt(totalMonthlyBytes);
-                    this.eneryTotalMonthly = MokoUtils.getDecimalFormat("0.##").format(totalMonthly * 0.01f);
+                    this.eneryTotalMonthly = totalMonthly;
 
-                    byte[] totalTodayBytes = Arrays.copyOfRange(value, 14, 16);
+                    byte[] totalTodayBytes = Arrays.copyOfRange(value, 15, 18);
                     final int totalToday = MokoUtils.toInt(totalTodayBytes);
-                    this.eneryTotalToday = MokoUtils.getDecimalFormat("0.##").format(totalToday * 0.01f);
+                    this.eneryTotalToday = totalToday;
 
-                    byte[] currentBytes = Arrays.copyOfRange(value, 16, 18);
+                    byte[] currentBytes = Arrays.copyOfRange(value, 18, 20);
                     final int current = MokoUtils.toInt(currentBytes);
-                    String energyCurrent = MokoUtils.getDecimalFormat("0.##").format(current * 0.01f);
+                    String energyCurrent = String.valueOf(current);
 
                     energyInfo.recordDate = MokoUtils.calendar2StrDate(calendar, "yyyy-MM-dd HH");
                     energyInfo.date = energyInfo.recordDate.substring(5, 10);
@@ -379,10 +381,10 @@ public class MokoSupport implements MokoResponseCallback {
                     if (energyHistory != null) {
                         EnergyInfo first = energyHistory.get(0);
                         if (energyInfo.date.equals(first.date)) {
-                            first.value = eneryTotalToday;
+                            first.value = String.valueOf(eneryTotalToday);
                         } else {
                             energyInfo.type = 1;
-                            energyInfo.recordDate = eneryTotalToday;
+                            energyInfo.value = String.valueOf(eneryTotalToday);
                             energyHistory.add(0, energyInfo);
                         }
                     } else {
@@ -695,9 +697,9 @@ public class MokoSupport implements MokoResponseCallback {
     public String electricityV;
     public String electricityC;
     public String electricityP;
-    public String eneryTotal;
-    public String eneryTotalToday;
-    public String eneryTotalMonthly;
+    public long eneryTotal;
+    public int eneryTotalToday;
+    public int eneryTotalMonthly;
     public int countDown;
     public int countDownInit;
     public String firmwareVersion;
@@ -707,4 +709,5 @@ public class MokoSupport implements MokoResponseCallback {
     public List<EnergyInfo> energyHistory;
     public List<EnergyInfo> energyHistoryToday;
     public int overloadValue;
+    public int electricityConstant;
 }

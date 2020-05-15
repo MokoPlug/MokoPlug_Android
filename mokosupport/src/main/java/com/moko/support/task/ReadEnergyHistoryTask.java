@@ -24,6 +24,8 @@ public class ReadEnergyHistoryTask extends OrderTask {
     private List<EnergyInfo> energyInfos;
     private Calendar calendar;
 
+    private int eneryTotalMonth = 0;
+
     public ReadEnergyHistoryTask(MokoOrderTaskCallback callback) {
         super(OrderType.READ_CHARACTER, OrderEnum.READ_ENERGY_HISTORY, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[ORDERDATA_LENGTH];
@@ -64,21 +66,20 @@ public class ReadEnergyHistoryTask extends OrderTask {
                 calendar.set(Calendar.MINUTE, minute);
             }
         }
-        int eneryTotalMonth = 0;
         if (0x0E == (value[1] & 0xFF)) {
-            int count = (value[2] & 0xFF) / 3;
+            int count = (value[2] & 0xFF) / 4;
             for (int i = 0; i < count; i++) {
                 EnergyInfo energyInfo = new EnergyInfo();
                 total--;
-                int day = value[3 + 3 * i];
-                byte[] energyBytes = Arrays.copyOfRange(value, 4 + 3 * i, 6 + 3 * i);
+                int day = value[3 + 4 * i];
+                byte[] energyBytes = Arrays.copyOfRange(value, 4 + 4 * i, 7 + 4 * i);
                 int energy = MokoUtils.toInt(energyBytes);
                 Calendar c = (Calendar) calendar.clone();
                 c.add(Calendar.DAY_OF_MONTH, day);
                 energyInfo.recordDate = MokoUtils.calendar2StrDate(c, "yyyy-MM-dd HH");
                 energyInfo.type = 1;
                 energyInfo.date = energyInfo.recordDate.substring(5, 10);
-                energyInfo.value = MokoUtils.getDecimalFormat("0.##").format(energy * 0.01f);
+                energyInfo.value = String.valueOf(energy);
                 energyInfo.energy = energy;
                 eneryTotalMonth += energy;
                 energyInfos.add(energyInfo);
@@ -86,7 +87,7 @@ public class ReadEnergyHistoryTask extends OrderTask {
             if (total <= 0) {
                 Collections.reverse(energyInfos);
                 MokoSupport.getInstance().energyHistory = energyInfos;
-                MokoSupport.getInstance().eneryTotalMonthly = MokoUtils.getDecimalFormat("0.##").format(eneryTotalMonth * 0.01f);
+                MokoSupport.getInstance().eneryTotalMonthly = eneryTotalMonth;
 
                 orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
                 MokoSupport.getInstance().pollTask();

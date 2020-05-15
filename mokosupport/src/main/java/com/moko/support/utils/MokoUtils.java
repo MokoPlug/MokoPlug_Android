@@ -245,4 +245,14 @@ public class MokoUtils {
         decimalFormat.setDecimalFormatSymbols(dfs);
         return decimalFormat;
     }
+
+    public static long longFrom8Bytes(byte[] input) {
+        long value = 0;
+        // 循环读取每个字节通过移位运算完成long的8个字节拼装
+        for (int count = 0; count < input.length; ++count) {
+            int shift = (3 - count) << 3;
+            value |= ((long) 0xff << shift) & ((long) input[count] << shift);
+        }
+        return value;
+    }
 }

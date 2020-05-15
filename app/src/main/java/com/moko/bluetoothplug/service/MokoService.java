@@ -29,6 +29,7 @@ import com.moko.support.task.ReadMacTask;
 import com.moko.support.task.ReadOverloadTopValueTask;
 import com.moko.support.task.ReadOverloadValueTask;
 import com.moko.support.task.ReadPowerStateTask;
+import com.moko.support.task.ReadElectricityConstantTask;
 import com.moko.support.task.ReadSwitchStateTask;
 import com.moko.support.task.WriteAdvIntervalTask;
 import com.moko.support.task.WriteAdvNameTask;
@@ -237,6 +238,11 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
 
     public OrderTask readSwitchState() {
         ReadSwitchStateTask task = new ReadSwitchStateTask(this);
+        return task;
+    }
+
+    public OrderTask readElectricityConstant() {
+        ReadElectricityConstantTask task = new ReadElectricityConstantTask(this);
         return task;
     }
 

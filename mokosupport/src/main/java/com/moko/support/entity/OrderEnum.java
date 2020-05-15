@@ -28,6 +28,7 @@ public enum OrderEnum implements Serializable {
     READ_ENERGY_HISTORY("读取历史累计电能", 0x0D),
     READ_OVERLOAD_VALUE("读取过载状态", 0x10),
     READ_ENERGY_HISTORY_TODAY("读取当天每小时数据", 0x11),
+    READ_ELECTRICITY_CONSTANT("读取脉冲常数", 0x13),
 
     WRITE_ADV_NAME("设置广播名字", 0x01),
     WRITE_ADV_INTERVAL("设置广播间隔", 0x02),

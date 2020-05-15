@@ -126,7 +126,7 @@ public class ModifyPowerStatusActivity extends BaseActivity implements RadioGrou
                     OrderEnum order = response.order;
                     byte[] value = response.responseValue;
                     switch (order) {
-                        case WRITE_ADV_NAME:
+                        case WRITE_POWER_STATE:
                             if (0 == (value[3] & 0xFF)) {
                                 MokoSupport.getInstance().powerState = powerState;
                                 ToastUtils.showToast(ModifyPowerStatusActivity.this, R.string.success);

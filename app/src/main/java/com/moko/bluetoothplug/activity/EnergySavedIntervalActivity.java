@@ -157,7 +157,7 @@ public class EnergySavedIntervalActivity extends BaseActivity {
                 }
                 showSyncingProgressDialog();
                 int energySavedPercent = MokoSupport.getInstance().energySavedPercent;
-                MokoSupport.getInstance().sendOrder(mMokoService.writeEnergySavedParams(interval,energySavedPercent));
+                MokoSupport.getInstance().sendOrder(mMokoService.writeEnergySavedParams(interval, energySavedPercent));
                 break;
         }
     }

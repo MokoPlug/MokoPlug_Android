@@ -35,10 +35,8 @@ import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.callback.MokoScanDeviceCallback;
 import com.moko.support.entity.DeviceInfo;
-import com.moko.support.entity.OrderEnum;
 import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.task.OrderTask;
-import com.moko.support.task.OrderTaskResponse;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -186,6 +184,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                     orderTasks.add(mMokoService.readAdvName());
                     orderTasks.add(mMokoService.readCountdown());
                     orderTasks.add(mMokoService.readElectricity());
+                    orderTasks.add(mMokoService.readElectricityConstant());
                     orderTasks.add(mMokoService.readEnergyHistory());
                     orderTasks.add(mMokoService.readEnergyHistoryToday());
                     orderTasks.add(mMokoService.readEnergySavedParams());

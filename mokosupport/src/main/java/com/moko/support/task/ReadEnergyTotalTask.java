@@ -9,6 +9,7 @@ import com.moko.support.entity.OrderType;
 import com.moko.support.log.LogModule;
 import com.moko.support.utils.MokoUtils;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 public class ReadEnergyTotalTask extends OrderTask {
@@ -33,11 +34,11 @@ public class ReadEnergyTotalTask extends OrderTask {
     public void parseValue(byte[] value) {
         if (order.getOrderHeader() != (value[1] & 0xFF))
             return;
-        if (0x03 != (value[2] & 0xFF))
+        if (0x04 != (value[2] & 0xFF))
             return;
-        byte[] totalBytes = Arrays.copyOfRange(value, 3, 6);
-        final int total = MokoUtils.toInt(totalBytes);
-        MokoSupport.getInstance().eneryTotal = MokoUtils.getDecimalFormat("0.##").format(total * 0.01f);
+        byte[] totalBytes = Arrays.copyOfRange(value, 3, 7);
+        long total = MokoUtils.longFrom8Bytes(totalBytes);
+        MokoSupport.getInstance().eneryTotal = total;
 
 //        byte[] totalTodayBytes = Arrays.copyOfRange(value, 6, 8);
 //        final int totalToday = MokoUtils.toInt(totalTodayBytes);

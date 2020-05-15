@@ -23,6 +23,7 @@ import com.moko.bluetoothplug.dialog.AlertMessageDialog;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.event.DataChangedEvent;
+import com.moko.support.utils.MokoUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -63,7 +64,11 @@ public class SettingFragment extends Fragment {
         final int function = event.getFunction();
         switch (function) {
             case MokoConstants.NOTIFY_FUNCTION_ENERGY:
-                tvEnergyConsumption.setText(MokoSupport.getInstance().eneryTotal);
+                int electricityConstant = MokoSupport.getInstance().electricityConstant;
+                long total = MokoSupport.getInstance().eneryTotal;
+                float consumption = total * 1.0f / electricityConstant;
+                String energyConsumption = MokoUtils.getDecimalFormat("0.##").format(consumption);
+                tvEnergyConsumption.setText(energyConsumption);
                 break;
         }
     }
@@ -85,7 +90,11 @@ public class SettingFragment extends Fragment {
         tvOverloadValue.setText(String.valueOf(MokoSupport.getInstance().overloadTopValue));
         tvEnergySavedInterval.setText(String.valueOf(MokoSupport.getInstance().energySavedInterval));
         tvEnergySavedPercent.setText(String.valueOf(MokoSupport.getInstance().energySavedPercent));
-        tvEnergyConsumption.setText(MokoSupport.getInstance().eneryTotal);
+        int electricityConstant = MokoSupport.getInstance().electricityConstant;
+        long total = MokoSupport.getInstance().eneryTotal;
+        float consumption = total * 1.0f / electricityConstant;
+        String energyConsumption = MokoUtils.getDecimalFormat("0.##").format(consumption);
+        tvEnergyConsumption.setText(energyConsumption);
         activity = (DeviceInfoActivity) getActivity();
         EventBus.getDefault().register(this);
         return view;
