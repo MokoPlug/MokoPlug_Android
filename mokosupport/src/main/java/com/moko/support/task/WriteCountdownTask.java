@@ -3,17 +3,19 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
+import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
 import com.moko.support.utils.MokoUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class WriteCountdownTask extends OrderTask {
     public byte[] orderData;
 
-    public WriteCountdownTask(MokoOrderTaskCallback callback) {
-        super(OrderType.WRITE_CHARACTER, OrderEnum.WRITE_COUNTDOWN, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public WriteCountdownTask() {
+        super(OrderType.WRITE_CHARACTER, OrderEnum.WRITE_COUNTDOWN, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
     }
 
     public void setData(int countdown) {
@@ -42,7 +44,10 @@ public class WriteCountdownTask extends OrderTask {
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
         response.responseValue = value;
         MokoSupport.getInstance().pollTask();
-        callback.onOrderResult(response);
-        MokoSupport.getInstance().executeTask(callback);
+        MokoSupport.getInstance().executeTask();
+        OrderTaskResponseEvent event = new OrderTaskResponseEvent();
+        event.setAction(MokoConstants.ACTION_ORDER_RESULT);
+        event.setResponse(response);
+        EventBus.getDefault().post(event);
     }
 }

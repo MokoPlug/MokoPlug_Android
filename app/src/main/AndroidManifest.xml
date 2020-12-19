@@ -74,7 +74,6 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <service android:name="com.moko.bluetoothplug.service.MokoService" />
         <service android:name="com.moko.bluetoothplug.service.DfuService" />
 
     </application>

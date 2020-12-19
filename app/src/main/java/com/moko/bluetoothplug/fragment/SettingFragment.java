@@ -28,24 +28,24 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class SettingFragment extends Fragment {
 
     private static final String TAG = SettingFragment.class.getSimpleName();
-    @Bind(R.id.tv_device_name)
+    @BindView(R.id.tv_device_name)
     TextView tvDeviceName;
-    @Bind(R.id.tv_adv_interval)
+    @BindView(R.id.tv_adv_interval)
     TextView tvAdvInterval;
-    @Bind(R.id.tv_overload_value)
+    @BindView(R.id.tv_overload_value)
     TextView tvOverloadValue;
-    @Bind(R.id.tv_energy_saved_interval)
+    @BindView(R.id.tv_energy_saved_interval)
     TextView tvEnergySavedInterval;
-    @Bind(R.id.tv_energy_saved_percent)
+    @BindView(R.id.tv_energy_saved_percent)
     TextView tvEnergySavedPercent;
-    @Bind(R.id.tv_energy_consumption)
+    @BindView(R.id.tv_energy_consumption)
     TextView tvEnergyConsumption;
 
     private DeviceInfoActivity activity;
@@ -116,7 +116,6 @@ public class SettingFragment extends Fragment {
         Log.i(TAG, "onDestroyView: ");
         super.onDestroyView();
         EventBus.getDefault().unregister(this);
-        ButterKnife.unbind(this);
     }
 
     @Override

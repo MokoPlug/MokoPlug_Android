@@ -3,16 +3,18 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
+import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class WriteResetTask extends OrderTask {
     public byte[] orderData;
 
-    public WriteResetTask(MokoOrderTaskCallback callback) {
-        super(OrderType.WRITE_CHARACTER, OrderEnum.WRITE_RESET, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public WriteResetTask() {
+        super(OrderType.WRITE_CHARACTER, OrderEnum.WRITE_RESET, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[3];
         orderData[0] = (byte) MokoConstants.HEADER_WRITE_SEND;
         orderData[1] = (byte) order.getOrderHeader();
@@ -33,7 +35,10 @@ public class WriteResetTask extends OrderTask {
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
         response.responseValue = value;
         MokoSupport.getInstance().pollTask();
-        callback.onOrderResult(response);
-        MokoSupport.getInstance().executeTask(callback);
+        MokoSupport.getInstance().executeTask();
+        OrderTaskResponseEvent event = new OrderTaskResponseEvent();
+        event.setAction(MokoConstants.ACTION_ORDER_RESULT);
+        event.setResponse(response);
+        EventBus.getDefault().post(event);
     }
 }

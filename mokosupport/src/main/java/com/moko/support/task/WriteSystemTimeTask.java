@@ -3,19 +3,21 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
+import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
 import com.moko.support.utils.MokoUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Calendar;
 
 public class WriteSystemTimeTask extends OrderTask {
     public byte[] orderData;
 
-    public WriteSystemTimeTask(MokoOrderTaskCallback callback) {
-        super(OrderType.WRITE_CHARACTER, OrderEnum.WRITE_SYSTEM_TIME, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public WriteSystemTimeTask() {
+        super(OrderType.WRITE_CHARACTER, OrderEnum.WRITE_SYSTEM_TIME, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH) + 1;
@@ -51,7 +53,10 @@ public class WriteSystemTimeTask extends OrderTask {
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
         response.responseValue = value;
         MokoSupport.getInstance().pollTask();
-        callback.onOrderResult(response);
-        MokoSupport.getInstance().executeTask(callback);
+        MokoSupport.getInstance().executeTask();
+        OrderTaskResponseEvent event = new OrderTaskResponseEvent();
+        event.setAction(MokoConstants.ACTION_ORDER_RESULT);
+        event.setResponse(response);
+        EventBus.getDefault().post(event);
     }
 }

@@ -3,12 +3,14 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.EnergyInfo;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
+import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
 import com.moko.support.utils.MokoUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,8 +26,8 @@ public class ReadEnergyHistoryTodayTask extends OrderTask {
     private List<EnergyInfo> energyInfos;
     private Calendar calendar;
 
-    public ReadEnergyHistoryTodayTask(MokoOrderTaskCallback callback) {
-        super(OrderType.READ_CHARACTER, OrderEnum.READ_ENERGY_HISTORY_TODAY, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public ReadEnergyHistoryTodayTask() {
+        super(OrderType.READ_CHARACTER, OrderEnum.READ_ENERGY_HISTORY_TODAY, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_READ_SEND;
         orderData[1] = (byte) order.getOrderHeader();
@@ -45,13 +47,16 @@ public class ReadEnergyHistoryTodayTask extends OrderTask {
                 // 没有历史数据
                 orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
                 MokoSupport.getInstance().pollTask();
-                callback.onOrderResult(response);
-                MokoSupport.getInstance().executeTask(callback);
+                MokoSupport.getInstance().executeTask();
+                OrderTaskResponseEvent event = new OrderTaskResponseEvent();
+                event.setAction(MokoConstants.ACTION_ORDER_RESULT);
+                event.setResponse(response);
+                EventBus.getDefault().post(event);
             }
             if (0x04 == (value[2] & 0xFF)) {
                 total = value[3] & 0xFF;
                 byte[] totalTodayBytes = Arrays.copyOfRange(value, 4, 7);
-                final int totalToday = MokoUtils.toInt(totalTodayBytes);
+                final int totalToday = MokoUtils.toIntUnsigned(totalTodayBytes);
                 MokoSupport.getInstance().eneryTotalToday = totalToday;
                 energyInfos = new ArrayList<>();
                 calendar = Calendar.getInstance();
@@ -66,7 +71,7 @@ public class ReadEnergyHistoryTodayTask extends OrderTask {
                 total--;
                 int hour = value[3 + 3 * i];
                 byte[] energyBytes = Arrays.copyOfRange(value, 4 + 3 * i, 6 + 3 * i);
-                int energy = MokoUtils.toInt(energyBytes);
+                int energy = MokoUtils.toIntUnsigned(energyBytes);
                 Calendar c = (Calendar) calendar.clone();
                 c.add(Calendar.HOUR_OF_DAY, hour);
                 c.set(Calendar.MINUTE, 0);
@@ -83,8 +88,11 @@ public class ReadEnergyHistoryTodayTask extends OrderTask {
 
                 orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
                 MokoSupport.getInstance().pollTask();
-                callback.onOrderResult(response);
-                MokoSupport.getInstance().executeTask(callback);
+                MokoSupport.getInstance().executeTask();
+                OrderTaskResponseEvent event = new OrderTaskResponseEvent();
+                event.setAction(MokoConstants.ACTION_ORDER_RESULT);
+                event.setResponse(response);
+                EventBus.getDefault().post(event);
             }
         }
 

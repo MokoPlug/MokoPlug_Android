@@ -15,7 +15,6 @@ import android.provider.Settings;
 
 import com.moko.bluetoothplug.AppConstants;
 import com.moko.bluetoothplug.R;
-import com.moko.bluetoothplug.service.MokoService;
 import com.moko.bluetoothplug.utils.Utils;
 
 import androidx.core.app.ActivityCompat;
@@ -98,8 +97,6 @@ public class GuideActivity extends BaseActivity {
                 }
             }
         }
-        // 启动服务
-        startService(new Intent(this, MokoService.class));
         new Thread() {
             public void run() {
                 try {

@@ -23,22 +23,22 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class PowerFragment extends Fragment {
 
     private static final String TAG = PowerFragment.class.getSimpleName();
-    @Bind(R.id.arc_progress)
+    @BindView(R.id.arc_progress)
     ArcProgress arcProgress;
-    @Bind(R.id.tv_power)
+    @BindView(R.id.tv_power)
     TextView tvPower;
-    @Bind(R.id.tv_onoff)
+    @BindView(R.id.tv_onoff)
     TextView tvOnoff;
-    @Bind(R.id.cv_onoff)
+    @BindView(R.id.cv_onoff)
     CardView cvOnoff;
-    @Bind(R.id.tv_overload)
+    @BindView(R.id.tv_overload)
     TextView tvOverload;
     private boolean switchState = false;
     private DeviceInfoActivity activity;
@@ -143,7 +143,6 @@ public class PowerFragment extends Fragment {
         Log.i(TAG, "onDestroyView: ");
         super.onDestroyView();
         EventBus.getDefault().unregister(this);
-        ButterKnife.unbind(this);
     }
 
     @Override

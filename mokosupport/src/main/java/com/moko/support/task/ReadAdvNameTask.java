@@ -3,10 +3,12 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
+import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Arrays;
 
@@ -15,8 +17,8 @@ public class ReadAdvNameTask extends OrderTask {
 
     public byte[] orderData;
 
-    public ReadAdvNameTask(MokoOrderTaskCallback callback) {
-        super(OrderType.READ_CHARACTER, OrderEnum.READ_ADV_NAME, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public ReadAdvNameTask() {
+        super(OrderType.READ_CHARACTER, OrderEnum.READ_ADV_NAME, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_READ_SEND;
         orderData[1] = (byte) order.getOrderHeader();
@@ -43,7 +45,10 @@ public class ReadAdvNameTask extends OrderTask {
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
 
         MokoSupport.getInstance().pollTask();
-        callback.onOrderResult(response);
-        MokoSupport.getInstance().executeTask(callback);
+        MokoSupport.getInstance().executeTask();
+        OrderTaskResponseEvent event = new OrderTaskResponseEvent();
+        event.setAction(MokoConstants.ACTION_ORDER_RESULT);
+        event.setResponse(response);
+        EventBus.getDefault().post(event);
     }
 }

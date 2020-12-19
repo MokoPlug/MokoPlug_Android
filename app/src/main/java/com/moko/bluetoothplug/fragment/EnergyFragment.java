@@ -28,25 +28,25 @@ import java.util.List;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class EnergyFragment extends Fragment implements RadioGroup.OnCheckedChangeListener {
 
     private static final String TAG = EnergyFragment.class.getSimpleName();
-    @Bind(R.id.rg_energy)
+    @BindView(R.id.rg_energy)
     RadioGroup rgEnergy;
-    @Bind(R.id.tv_energy_total)
+    @BindView(R.id.tv_energy_total)
     TextView tvEnergyTotal;
-    @Bind(R.id.tv_duration)
+    @BindView(R.id.tv_duration)
     TextView tvDuration;
-    @Bind(R.id.tv_unit)
+    @BindView(R.id.tv_unit)
     TextView tvUnit;
-    @Bind(R.id.rv_energy)
+    @BindView(R.id.rv_energy)
     RecyclerView rvEnergy;
-    @Bind(R.id.rb_daily)
+    @BindView(R.id.rb_daily)
     RadioButton rbDaily;
-    @Bind(R.id.rb_monthly)
+    @BindView(R.id.rb_monthly)
     RadioButton rbMonthly;
     private EnergyListAdapter adapter;
 
@@ -137,7 +137,6 @@ public class EnergyFragment extends Fragment implements RadioGroup.OnCheckedChan
         Log.i(TAG, "onDestroyView: ");
         super.onDestroyView();
         EventBus.getDefault().unregister(this);
-        ButterKnife.unbind(this);
     }
 
     @Override

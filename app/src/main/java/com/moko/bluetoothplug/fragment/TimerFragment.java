@@ -20,18 +20,18 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class TimerFragment extends Fragment {
 
     private static final String TAG = TimerFragment.class.getSimpleName();
-    @Bind(R.id.circular_progress)
+    @BindView(R.id.circular_progress)
     CircularProgress circularProgress;
-    @Bind(R.id.tv_countdown_tips)
+    @BindView(R.id.tv_countdown_tips)
     TextView tvCountdownTips;
-    @Bind(R.id.tv_timer)
+    @BindView(R.id.tv_timer)
     TextView tvTimer;
 
     private DeviceInfoActivity activity;
@@ -117,7 +117,6 @@ public class TimerFragment extends Fragment {
         Log.i(TAG, "onDestroyView: ");
         super.onDestroyView();
         EventBus.getDefault().unregister(this);
-        ButterKnife.unbind(this);
     }
 
     @Override

@@ -143,13 +143,33 @@ public class MokoUtils {
      * @Author wenzheng.liu
      * @Description 将byte数组bRefArr转为一个整数, 字节数组的低位是整型的低字节位
      */
-    public static int toInt(byte[] bRefArr) {
+    public static int toIntUnsigned(byte[] bRefArr) {
         int iOutcome = 0;
         byte bLoop;
 
         for (int i = 0, length = bRefArr.length; i < length; i++) {
             bLoop = bRefArr[i];
             iOutcome += (bLoop & 0xFF) << (8 * (length - 1 - i));
+        }
+        return iOutcome;
+    }
+
+    /**
+     * @Date 2017/8/15
+     * @Author wenzheng.liu
+     * @Description 将byte数组bRefArr转为一个整数, 字节数组的低位是整型的低字节位
+     */
+    public static int toIntSigned(byte[] bRefArr) {
+        int iOutcome = 0;
+        byte bLoop;
+
+        for (int i = 0, length = bRefArr.length; i < length; i++) {
+            bLoop = bRefArr[i];
+            if (i == 0) {
+                iOutcome += bLoop  << 24;
+            } else {
+                iOutcome += (bLoop & 0xFF) << (8 * (length - 1 - i));
+            }
         }
         return iOutcome;
     }

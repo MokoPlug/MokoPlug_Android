@@ -13,7 +13,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -25,13 +25,13 @@ import butterknife.ButterKnife;
 public class MoreActivity extends BaseActivity {
 
 
-    @Bind(R.id.tv_title)
+    @BindView(R.id.tv_title)
     TextView tvTitle;
-    @Bind(R.id.tv_product_name)
+    @BindView(R.id.tv_product_name)
     TextView tvProductName;
-    @Bind(R.id.tv_firmware_version)
+    @BindView(R.id.tv_firmware_version)
     TextView tvFirmwareVersion;
-    @Bind(R.id.tv_device_mac)
+    @BindView(R.id.tv_device_mac)
     TextView tvDeviceMac;
 
     @Override

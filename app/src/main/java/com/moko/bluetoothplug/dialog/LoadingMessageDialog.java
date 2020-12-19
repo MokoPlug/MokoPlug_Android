@@ -12,15 +12,15 @@ import com.moko.bluetoothplug.view.ProgressDrawable;
 
 import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class LoadingMessageDialog extends BaseDialog {
     private static final int DIALOG_DISMISS_DELAY_TIME = 5000;
     public static final String TAG = LoadingMessageDialog.class.getSimpleName();
-    @Bind(R.id.iv_loading)
+    @BindView(R.id.iv_loading)
     ImageView ivLoading;
-    @Bind(R.id.tv_loading_message)
+    @BindView(R.id.tv_loading_message)
     TextView tvLoadingMessage;
 
     private String message;
@@ -101,7 +101,6 @@ public class LoadingMessageDialog extends BaseDialog {
     public void onDestroyView() {
         super.onDestroyView();
         ((ProgressDrawable) ivLoading.getDrawable()).stop();
-        ButterKnife.unbind(this);
     }
 
 

@@ -8,7 +8,7 @@ import com.moko.bluetoothplug.view.WheelView;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -21,11 +21,11 @@ import butterknife.OnClick;
 public class TimerDialog extends BaseDialog {
     public static final String TAG = TimerDialog.class.getSimpleName();
 
-    @Bind(R.id.tv_switch_state)
+    @BindView(R.id.tv_switch_state)
     TextView tvSwitchState;
-    @Bind(R.id.wv_hour)
+    @BindView(R.id.wv_hour)
     WheelView wvHour;
-    @Bind(R.id.wv_minute)
+    @BindView(R.id.wv_minute)
     WheelView wvMinute;
     private boolean on_off;
 
@@ -108,12 +108,6 @@ public class TimerDialog extends BaseDialog {
     @Override
     public float getDimAmount() {
         return 0.7f;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
 }

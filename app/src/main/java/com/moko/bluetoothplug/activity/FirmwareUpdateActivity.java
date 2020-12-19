@@ -29,7 +29,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import no.nordicsemi.android.dfu.DfuProgressListener;
@@ -42,9 +42,9 @@ public class FirmwareUpdateActivity extends BaseActivity {
 
     public String mDeviceMac;
     public String mDeviceName;
-    @Bind(R.id.tv_firmware_version)
+    @BindView(R.id.tv_firmware_version)
     TextView tvFirmwareVersion;
-    @Bind(R.id.tv_firmware_path)
+    @BindView(R.id.tv_firmware_path)
     TextView tvFirmwarePath;
     private boolean isUpdate;
 

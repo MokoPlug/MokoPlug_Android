@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.moko.bluetoothplug.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -23,11 +23,11 @@ import butterknife.OnClick;
 public class ScanFilterDialog extends BaseDialog {
     public static final String TAG = ScanFilterDialog.class.getSimpleName();
 
-    @Bind(R.id.et_filter_name)
+    @BindView(R.id.et_filter_name)
     EditText etFilterName;
-    @Bind(R.id.tv_rssi)
+    @BindView(R.id.tv_rssi)
     TextView tvRssi;
-    @Bind(R.id.sb_rssi)
+    @BindView(R.id.sb_rssi)
     SeekBar sbRssi;
 
     private int filterRssi;
@@ -98,7 +98,6 @@ public class ScanFilterDialog extends BaseDialog {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
     @OnClick({R.id.iv_filter_delete, R.id.tv_done})

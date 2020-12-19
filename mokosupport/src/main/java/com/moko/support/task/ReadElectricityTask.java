@@ -3,11 +3,13 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
+import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
 import com.moko.support.utils.MokoUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Arrays;
 
@@ -16,8 +18,8 @@ public class ReadElectricityTask extends OrderTask {
 
     public byte[] orderData;
 
-    public ReadElectricityTask(MokoOrderTaskCallback callback) {
-        super(OrderType.READ_CHARACTER, OrderEnum.READ_ELECTRICITY_VALUE, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public ReadElectricityTask() {
+        super(OrderType.READ_CHARACTER, OrderEnum.READ_ELECTRICITY_VALUE, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_READ_SEND;
         orderData[1] = (byte) order.getOrderHeader();
@@ -36,22 +38,25 @@ public class ReadElectricityTask extends OrderTask {
         if (0x07 != (value[2] & 0xFF))
             return;
         byte[] vBytes = Arrays.copyOfRange(value, 3, 5);
-        final int v = MokoUtils.toInt(vBytes);
+        final int v = MokoUtils.toIntUnsigned(vBytes);
         MokoSupport.getInstance().electricityV = MokoUtils.getDecimalFormat("0.#").format(v * 0.1f);
 
         byte[] cBytes = Arrays.copyOfRange(value, 5, 8);
-        final int c = MokoUtils.toInt(cBytes);
+        final int c = MokoUtils.toIntUnsigned(cBytes);
         MokoSupport.getInstance().electricityC =  String.valueOf(c);
 
         byte[] pBytes = Arrays.copyOfRange(value, 8, 10);
-        final int p = MokoUtils.toInt(pBytes);
+        final int p = MokoUtils.toIntUnsigned(pBytes);
         MokoSupport.getInstance().electricityP =  MokoUtils.getDecimalFormat("0.#").format(p * 0.1f);
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
 
         MokoSupport.getInstance().pollTask();
-        callback.onOrderResult(response);
-        MokoSupport.getInstance().executeTask(callback);
+        MokoSupport.getInstance().executeTask();
+        OrderTaskResponseEvent event = new OrderTaskResponseEvent();
+        event.setAction(MokoConstants.ACTION_ORDER_RESULT);
+        event.setResponse(response);
+        EventBus.getDefault().post(event);
     }
 }

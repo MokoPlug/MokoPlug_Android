@@ -3,11 +3,13 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
+import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
 import com.moko.support.utils.MokoUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Arrays;
 
@@ -16,8 +18,8 @@ public class ReadElectricityConstantTask extends OrderTask {
 
     public byte[] orderData;
 
-    public ReadElectricityConstantTask(MokoOrderTaskCallback callback) {
-        super(OrderType.READ_CHARACTER, OrderEnum.READ_ELECTRICITY_CONSTANT, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public ReadElectricityConstantTask() {
+        super(OrderType.READ_CHARACTER, OrderEnum.READ_ELECTRICITY_CONSTANT, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_READ_SEND;
         orderData[1] = (byte) order.getOrderHeader();
@@ -36,13 +38,16 @@ public class ReadElectricityConstantTask extends OrderTask {
         if (0x02 != (value[2] & 0xFF))
             return;
         byte[] pulseConstantBytes = Arrays.copyOfRange(value, 3, 5);
-        MokoSupport.getInstance().electricityConstant = MokoUtils.toInt(pulseConstantBytes);
+        MokoSupport.getInstance().electricityConstant = MokoUtils.toIntUnsigned(pulseConstantBytes);
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
 
         MokoSupport.getInstance().pollTask();
-        callback.onOrderResult(response);
-        MokoSupport.getInstance().executeTask(callback);
+        MokoSupport.getInstance().executeTask();
+        OrderTaskResponseEvent event = new OrderTaskResponseEvent();
+        event.setAction(MokoConstants.ACTION_ORDER_RESULT);
+        event.setResponse(response);
+        EventBus.getDefault().post(event);
     }
 }

@@ -25,6 +25,7 @@ public class MokoConstants {// 读取发送头
     // 发现状态
     public static final String ACTION_DISCOVER_SUCCESS = "com.moko.bluetoothplug.ACTION_DISCOVER_SUCCESS";
     public static final String ACTION_DISCOVER_TIMEOUT = "com.moko.bluetoothplug.ACTION_DISCOVER_TIMEOUT";
+
     // 断开连接
     public static final String ACTION_CONN_STATUS_DISCONNECTED = "com.moko.bluetoothplug.ACTION_CONN_STATUS_DISCONNECTED";
     // 命令结果
