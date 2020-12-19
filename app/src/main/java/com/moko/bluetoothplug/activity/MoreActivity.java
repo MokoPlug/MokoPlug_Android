@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.moko.bluetoothplug.AppConstants;
 import com.moko.bluetoothplug.R;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;

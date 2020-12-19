@@ -3,7 +3,6 @@ package com.moko.bluetoothplug.adapter;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.moko.bluetoothplug.R;
-import com.moko.bluetoothplug.entity.PlugInfo;
 import com.moko.support.entity.EnergyInfo;
 
 public class EnergyListAdapter extends BaseQuickAdapter<EnergyInfo, BaseViewHolder> {

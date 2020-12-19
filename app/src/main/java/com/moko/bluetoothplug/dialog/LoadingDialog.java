@@ -1,6 +1,5 @@
 package com.moko.bluetoothplug.dialog;
 
-import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -8,6 +7,7 @@ import android.widget.ImageView;
 import com.moko.bluetoothplug.R;
 import com.moko.bluetoothplug.view.ProgressDrawable;
 
+import androidx.core.content.ContextCompat;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 

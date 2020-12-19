@@ -1,6 +1,5 @@
 package com.moko.bluetoothplug.dialog;
 
-import android.support.annotation.StringRes;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -10,6 +9,7 @@ import android.widget.TextView;
 
 import com.moko.bluetoothplug.R;
 
+import androidx.annotation.StringRes;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

@@ -12,13 +12,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
 
 import com.moko.bluetoothplug.AppConstants;
 import com.moko.bluetoothplug.R;
 import com.moko.bluetoothplug.service.MokoService;
 import com.moko.bluetoothplug.utils.Utils;
 
+import androidx.core.app.ActivityCompat;
 import butterknife.ButterKnife;
 
 

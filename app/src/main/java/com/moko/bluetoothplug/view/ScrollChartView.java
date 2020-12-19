@@ -8,7 +8,6 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Shader;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -22,6 +21,8 @@ import com.moko.bluetoothplug.entity.EnergyInfoData;
 import com.moko.bluetoothplug.utils.Utils;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 public class ScrollChartView extends View {
     private int width;

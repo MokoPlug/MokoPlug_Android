@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -30,7 +30,7 @@
         app:layout_constraintTop_toTopOf="@id/circular_progress" />
 
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/cv_timer"
         android:layout_width="120dp"
         android:layout_height="32dp"
@@ -49,7 +49,7 @@
             android:text="Set timer"
             android:textColor="@color/white_ffffff"
             android:textSize="16sp" />
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/tv_countdown_tips"
@@ -65,4 +65,4 @@
         app:layout_constraintTop_toBottomOf="@id/cv_timer" />
 
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

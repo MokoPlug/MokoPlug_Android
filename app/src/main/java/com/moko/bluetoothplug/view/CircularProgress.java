@@ -6,12 +6,13 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.moko.bluetoothplug.R;
 import com.moko.bluetoothplug.utils.Utils;
+
+import androidx.core.content.ContextCompat;
 
 /**
  * The Class CircularProgress.

@@ -9,7 +9,6 @@ import com.moko.support.entity.OrderType;
 import com.moko.support.log.LogModule;
 import com.moko.support.utils.MokoUtils;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 public class ReadEnergyTotalTask extends OrderTask {

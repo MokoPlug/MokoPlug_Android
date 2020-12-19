@@ -2,8 +2,6 @@ package com.moko.bluetoothplug.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +21,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

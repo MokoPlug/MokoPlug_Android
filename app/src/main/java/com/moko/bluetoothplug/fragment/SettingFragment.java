@@ -19,7 +19,6 @@ import com.moko.bluetoothplug.activity.FirmwareUpdateActivity;
 import com.moko.bluetoothplug.activity.ModifyNameActivity;
 import com.moko.bluetoothplug.activity.ModifyPowerStatusActivity;
 import com.moko.bluetoothplug.activity.OverloadValueActivity;
-import com.moko.bluetoothplug.dialog.AlertMessageDialog;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.event.DataChangedEvent;
