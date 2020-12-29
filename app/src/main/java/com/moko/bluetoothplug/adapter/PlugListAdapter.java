@@ -17,7 +17,7 @@ public class PlugListAdapter extends BaseQuickAdapter<PlugInfo, BaseViewHolder> 
             if (item.onoff == 0) {
                 helper.setText(R.id.tv_device_status, "OFF");
             } else {
-                helper.setText(R.id.tv_device_status, String.format("ON-%sW-%sV-%sA", item.electricityP, item.electricityV, item.electricityC));
+                helper.setText(R.id.tv_device_status, String.format("ON,%sW,%sV,%sA", item.electricityP, item.electricityV, item.electricityC));
             }
         } else {
             helper.setText(R.id.tv_device_status, "OVERLOAD");

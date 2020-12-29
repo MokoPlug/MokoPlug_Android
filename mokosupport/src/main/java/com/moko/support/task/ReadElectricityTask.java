@@ -35,19 +35,33 @@ public class ReadElectricityTask extends OrderTask {
     public void parseValue(byte[] value) {
         if (order.getOrderHeader() != (value[1] & 0xFF))
             return;
-        if (0x07 != (value[2] & 0xFF))
+        if (0x07 == (value[2] & 0xFF)) {
+            byte[] vBytes = Arrays.copyOfRange(value, 3, 5);
+            final int v = MokoUtils.toIntUnsigned(vBytes);
+            MokoSupport.getInstance().electricityV = MokoUtils.getDecimalFormat("0.#").format(v * 0.1f);
+
+            byte[] cBytes = Arrays.copyOfRange(value, 5, 8);
+            final int c = MokoUtils.toIntUnsigned(cBytes);
+            MokoSupport.getInstance().electricityC = String.valueOf(c);
+
+            byte[] pBytes = Arrays.copyOfRange(value, 8, 10);
+            final int p = MokoUtils.toIntUnsigned(pBytes);
+            MokoSupport.getInstance().electricityP = MokoUtils.getDecimalFormat("0.#").format(p * 0.1f);
+        } else if (0x0A == (value[2] & 0xFF)) {
+            byte[] vBytes = Arrays.copyOfRange(value, 3, 5);
+            final int v = MokoUtils.toIntUnsigned(vBytes);
+            MokoSupport.getInstance().electricityV = MokoUtils.getDecimalFormat("0.#").format(v * 0.1f);
+
+            byte[] cBytes = Arrays.copyOfRange(value, 5, 9);
+            final int c = MokoUtils.toIntSigned(cBytes);
+            MokoSupport.getInstance().electricityC = String.valueOf(c);
+
+            byte[] pBytes = Arrays.copyOfRange(value, 9, 13);
+            final int p = MokoUtils.toIntSigned(pBytes);
+            MokoSupport.getInstance().electricityP = MokoUtils.getDecimalFormat("0.#").format(p * 0.1f);
+        } else {
             return;
-        byte[] vBytes = Arrays.copyOfRange(value, 3, 5);
-        final int v = MokoUtils.toIntUnsigned(vBytes);
-        MokoSupport.getInstance().electricityV = MokoUtils.getDecimalFormat("0.#").format(v * 0.1f);
-
-        byte[] cBytes = Arrays.copyOfRange(value, 5, 8);
-        final int c = MokoUtils.toIntUnsigned(cBytes);
-        MokoSupport.getInstance().electricityC =  String.valueOf(c);
-
-        byte[] pBytes = Arrays.copyOfRange(value, 8, 10);
-        final int p = MokoUtils.toIntUnsigned(pBytes);
-        MokoSupport.getInstance().electricityP =  MokoUtils.getDecimalFormat("0.#").format(p * 0.1f);
+        }
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;

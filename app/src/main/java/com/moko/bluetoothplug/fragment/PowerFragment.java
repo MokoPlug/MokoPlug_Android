@@ -67,7 +67,7 @@ public class PowerFragment extends Fragment {
                 break;
             case MokoConstants.NOTIFY_FUNCTION_ELECTRICITY:
                 String electricityP = MokoSupport.getInstance().electricityP;
-                float progress = Float.parseFloat(electricityP) * 0.1f;
+                float progress = Math.abs(Float.parseFloat(electricityP)) * 0.1f;
                 arcProgress.setProgress(progress);
                 tvPower.setText(electricityP);
                 break;
@@ -117,7 +117,7 @@ public class PowerFragment extends Fragment {
         }
         String electricityP = MokoSupport.getInstance().electricityP;
         if (!TextUtils.isEmpty(electricityP)) {
-            float progress = Float.parseFloat(electricityP) * 0.1f;
+            float progress = Math.abs(Float.parseFloat(electricityP)) * 0.1f;
             arcProgress.setProgress(progress);
             tvPower.setText(electricityP);
         }

@@ -53,7 +53,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanSettings;
  * @Description
  * @ClassPath com.moko.support.MokoSupport
  */
-public class MokoSupport implements MokoResponseCallback  {
+public class MokoSupport implements MokoResponseCallback {
     public static final UUID DESCRIPTOR_UUID_NOTIFY = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothGatt mBluetoothGatt;
@@ -461,19 +461,33 @@ public class MokoSupport implements MokoResponseCallback  {
                     event.setFunction(MokoConstants.NOTIFY_FUNCTION_COUNTDOWN);
                     break;
                 case 5:
-                    if (length != 7)
+                    if (length == 7) {
+                        byte[] vBytes = Arrays.copyOfRange(value, 3, 5);
+                        final int v = MokoUtils.toIntUnsigned(vBytes);
+                        MokoSupport.getInstance().electricityV = MokoUtils.getDecimalFormat("0.#").format(v * 0.1f);
+
+                        byte[] cBytes = Arrays.copyOfRange(value, 5, 8);
+                        final int c = MokoUtils.toIntUnsigned(cBytes);
+                        MokoSupport.getInstance().electricityC = String.valueOf(c);
+
+                        byte[] pBytes = Arrays.copyOfRange(value, 8, 10);
+                        final int p = MokoUtils.toIntUnsigned(pBytes);
+                        MokoSupport.getInstance().electricityP = MokoUtils.getDecimalFormat("0.#").format(p * 0.1f);
+                    } else if (length == 10) {
+                        byte[] vBytes = Arrays.copyOfRange(value, 3, 5);
+                        final int v = MokoUtils.toIntUnsigned(vBytes);
+                        MokoSupport.getInstance().electricityV = MokoUtils.getDecimalFormat("0.#").format(v * 0.1f);
+
+                        byte[] cBytes = Arrays.copyOfRange(value, 5, 9);
+                        final int c = MokoUtils.toIntSigned(cBytes);
+                        MokoSupport.getInstance().electricityC = String.valueOf(c);
+
+                        byte[] pBytes = Arrays.copyOfRange(value, 9, 13);
+                        final int p = MokoUtils.toIntSigned(pBytes);
+                        MokoSupport.getInstance().electricityP = MokoUtils.getDecimalFormat("0.#").format(p * 0.1f);
+                    } else {
                         return;
-                    byte[] vBytes = Arrays.copyOfRange(value, 3, 5);
-                    final int v = MokoUtils.toIntUnsigned(vBytes);
-                    this.electricityV = MokoUtils.getDecimalFormat("0.#").format(v * 0.1f);
-
-                    byte[] cBytes = Arrays.copyOfRange(value, 5, 8);
-                    final int c = MokoUtils.toIntUnsigned(cBytes);
-                    this.electricityC = String.valueOf(c);
-
-                    byte[] pBytes = Arrays.copyOfRange(value, 8, 10);
-                    final int p = MokoUtils.toIntUnsigned(pBytes);
-                    this.electricityP = MokoUtils.getDecimalFormat("0.#").format(p * 0.1f);
+                    }
                     event.setFunction(MokoConstants.NOTIFY_FUNCTION_ELECTRICITY);
                     break;
                 case 6:
