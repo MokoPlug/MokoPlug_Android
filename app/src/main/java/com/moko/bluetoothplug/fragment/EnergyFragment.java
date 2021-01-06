@@ -174,7 +174,7 @@ public class EnergyFragment extends Fragment implements RadioGroup.OnCheckedChan
                 tvEnergyTotal.setText(eneryTotalMonthly);
                 Calendar calendarMonthly = Calendar.getInstance();
                 String end = MokoUtils.calendar2StrDate(calendarMonthly, "MM-dd");
-                calendarMonthly.add(Calendar.DAY_OF_MONTH, -30);
+                calendarMonthly.add(Calendar.DAY_OF_MONTH, -29);
                 String start = MokoUtils.calendar2StrDate(calendarMonthly, "MM-dd");
                 tvDuration.setText(String.format("%s to %s", start, end));
                 tvUnit.setText("Date");

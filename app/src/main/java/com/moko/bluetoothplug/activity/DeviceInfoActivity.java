@@ -111,6 +111,8 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             @Override
             public void run() {
                 if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
+                    MokoSupport.getInstance().countDown = 0;
+                    MokoSupport.getInstance().countDownInit = 0;
                     setResult(RESULT_OK);
                     finish();
                 }
