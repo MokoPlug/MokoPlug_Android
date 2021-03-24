@@ -12,16 +12,17 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
+import com.moko.ble.lib.MokoConstants;
+import com.moko.ble.lib.event.ConnectStatusEvent;
+import com.moko.ble.lib.event.OrderTaskResponseEvent;
+import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.bluetoothplug.R;
 import com.moko.bluetoothplug.dialog.LoadingMessageDialog;
 import com.moko.bluetoothplug.utils.ToastUtils;
-import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
-import com.moko.support.entity.OrderEnum;
-import com.moko.support.event.ConnectStatusEvent;
-import com.moko.support.event.OrderTaskResponseEvent;
-import com.moko.support.task.OrderTaskResponse;
+import com.moko.support.entity.OrderCHAR;
+import com.moko.support.entity.ParamsKeyEnum;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -76,7 +77,7 @@ public class ModifyNameActivity extends BaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
+                if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
                     if (MokoSupport.getInstance().isBluetoothOpen()) {
                         dismissSyncProgressDialog();
                         finish();
@@ -99,20 +100,25 @@ public class ModifyNameActivity extends BaseActivity {
             }
             if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
                 OrderTaskResponse response = event.getResponse();
-                OrderEnum order = response.order;
+                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
                 int responseType = response.responseType;
                 byte[] value = response.responseValue;
-                switch (order) {
-                    case WRITE_ADV_NAME:
-                        if (0 == (value[3] & 0xFF)) {
-                            MokoSupport.getInstance().advName = etDeviceName.getText().toString();
-                            ToastUtils.showToast(ModifyNameActivity.this, R.string.success);
-                            ModifyNameActivity.this.setResult(ModifyNameActivity.this.RESULT_OK);
-                            finish();
-                        } else {
-                            ToastUtils.showToast(ModifyNameActivity.this, R.string.failed);
+                switch (orderCHAR) {
+                    case CHAR_PARAMS_WRITE:
+                        final int cmd = value[1] & 0xFF;
+                        ParamsKeyEnum configKeyEnum = ParamsKeyEnum.fromParamKey(cmd);
+                        switch (configKeyEnum) {
+                            case SET_ADV_NAME:
+                                if (0 == (value[3] & 0xFF)) {
+                                    MokoSupport.getInstance().advName = etDeviceName.getText().toString();
+                                    ToastUtils.showToast(ModifyNameActivity.this, R.string.success);
+                                    ModifyNameActivity.this.setResult(ModifyNameActivity.this.RESULT_OK);
+                                    finish();
+                                } else {
+                                    ToastUtils.showToast(ModifyNameActivity.this, R.string.failed);
+                                }
+                                break;
                         }
-                        break;
                 }
             }
         });

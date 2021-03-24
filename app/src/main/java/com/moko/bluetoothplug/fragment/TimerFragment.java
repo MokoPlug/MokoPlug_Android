@@ -8,13 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.moko.ble.lib.MokoConstants;
+import com.moko.ble.lib.event.OrderTaskResponseEvent;
+import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.bluetoothplug.R;
 import com.moko.bluetoothplug.activity.DeviceInfoActivity;
 import com.moko.bluetoothplug.dialog.TimerDialog;
 import com.moko.bluetoothplug.view.CircularProgress;
-import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.event.DataChangedEvent;
+import com.moko.support.entity.OrderCHAR;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -44,30 +46,38 @@ public class TimerFragment extends Fragment {
         return fragment;
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDataChangedEvent(DataChangedEvent event) {
-        final int function = event.getFunction();
-        switch (function) {
-            case MokoConstants.NOTIFY_FUNCTION_COUNTDOWN:
-                int countdown = MokoSupport.getInstance().countDown;
-                if (countdown > 0) {
-                    int onoff = MokoSupport.getInstance().switchState;
-                    tvCountdownTips.setVisibility(View.VISIBLE);
-                    tvCountdownTips.setText(getString(R.string.countdown_tips, onoff == 1 ? "OFF" : "ON"));
-                    int hour = countdown / 3600;
-                    int minute = (countdown % 3600) / 60;
-                    int second = (countdown % 3600) % 60;
-                    tvTimer.setText(String.format("%02d:%02d:%02d", hour, minute, second));
-                    int countDownInit = MokoSupport.getInstance().countDownInit;
-                    int progress = Math.round(maxProgress - maxProgress / countDownInit * countdown);
-                    circularProgress.setProgress(progress);
-                } else {
-                    circularProgress.setProgress(36);
-                    tvCountdownTips.setVisibility(View.GONE);
-                    tvTimer.setText("00:00:00");
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)
+    public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
+        final String action = event.getAction();
+        activity.runOnUiThread(() -> {
+            if (MokoConstants.ACTION_CURRENT_DATA.equals(action)) {
+                OrderTaskResponse response = event.getResponse();
+                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
+                int responseType = response.responseType;
+                byte[] value = response.responseValue;
+                switch (responseType) {
+                    case MokoSupport.NOTIFY_FUNCTION_COUNTDOWN:
+                        int countdown = MokoSupport.getInstance().countDown;
+                        if (countdown > 0) {
+                            int onoff = MokoSupport.getInstance().switchState;
+                            tvCountdownTips.setVisibility(View.VISIBLE);
+                            tvCountdownTips.setText(getString(R.string.countdown_tips, onoff == 1 ? "OFF" : "ON"));
+                            int hour = countdown / 3600;
+                            int minute = (countdown % 3600) / 60;
+                            int second = (countdown % 3600) % 60;
+                            tvTimer.setText(String.format("%02d:%02d:%02d", hour, minute, second));
+                            int countDownInit = MokoSupport.getInstance().countDownInit;
+                            int progress = Math.round(maxProgress - maxProgress / countDownInit * countdown);
+                            circularProgress.setProgress(progress);
+                        } else {
+                            circularProgress.setProgress(36);
+                            tvCountdownTips.setVisibility(View.GONE);
+                            tvTimer.setText("00:00:00");
+                        }
+                        break;
                 }
-                break;
-        }
+            }
+        });
     }
 
     @Override
@@ -125,7 +135,7 @@ public class TimerFragment extends Fragment {
         super.onDestroy();
     }
 
-//    int countdown = 0;
+    //    int countdown = 0;
 //    int count = 0;
     final float maxProgress = 36.0f;
 

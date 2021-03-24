@@ -13,14 +13,14 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.elvishew.xlog.XLog;
+import com.moko.ble.lib.MokoConstants;
+import com.moko.ble.lib.event.ConnectStatusEvent;
 import com.moko.bluetoothplug.R;
 import com.moko.bluetoothplug.service.DfuService;
 import com.moko.bluetoothplug.utils.FileUtils;
 import com.moko.bluetoothplug.utils.ToastUtils;
-import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.event.ConnectStatusEvent;
-import com.moko.support.log.LogModule;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -66,7 +66,7 @@ public class FirmwareUpdateActivity extends BaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
+                if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
                     if (MokoSupport.getInstance().isBluetoothOpen()) {
                         if (isUpdate) {
                             return;
@@ -170,7 +170,7 @@ public class FirmwareUpdateActivity extends BaseActivity {
     private final DfuProgressListener mDfuProgressListener = new DfuProgressListenerAdapter() {
         @Override
         public void onDeviceConnecting(String deviceAddress) {
-            LogModule.w("onDeviceConnecting...");
+            XLog.w("onDeviceConnecting...");
             mDeviceConnectCount++;
             if (mDeviceConnectCount > 3) {
                 Toast.makeText(FirmwareUpdateActivity.this, "Error:DFU Failed", Toast.LENGTH_SHORT).show();
@@ -184,7 +184,7 @@ public class FirmwareUpdateActivity extends BaseActivity {
 
         @Override
         public void onDeviceDisconnecting(String deviceAddress) {
-            LogModule.w("onDeviceDisconnecting...");
+            XLog.w("onDeviceDisconnecting...");
         }
 
         @Override
@@ -223,7 +223,7 @@ public class FirmwareUpdateActivity extends BaseActivity {
         @Override
         public void onError(String deviceAddress, int error, int errorType, String message) {
             ToastUtils.showToast(FirmwareUpdateActivity.this, "Opps!DFU Failed. Please try again!");
-            LogModule.i("Error:" + message);
+            XLog.i("Error:" + message);
             isUpdate = !isUpdate;
             dismissDFUProgressDialog();
         }

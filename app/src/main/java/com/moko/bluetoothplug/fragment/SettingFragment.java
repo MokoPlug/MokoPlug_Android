@@ -9,6 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.moko.ble.lib.MokoConstants;
+import com.moko.ble.lib.event.OrderTaskResponseEvent;
+import com.moko.ble.lib.task.OrderTaskResponse;
+import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bluetoothplug.AppConstants;
 import com.moko.bluetoothplug.R;
 import com.moko.bluetoothplug.activity.AdvIntervalActivity;
@@ -19,10 +23,8 @@ import com.moko.bluetoothplug.activity.FirmwareUpdateActivity;
 import com.moko.bluetoothplug.activity.ModifyNameActivity;
 import com.moko.bluetoothplug.activity.ModifyPowerStatusActivity;
 import com.moko.bluetoothplug.activity.OverloadValueActivity;
-import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.event.DataChangedEvent;
-import com.moko.support.utils.MokoUtils;
+import com.moko.support.entity.OrderCHAR;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -58,18 +60,26 @@ public class SettingFragment extends Fragment {
         return fragment;
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDataChangedEvent(DataChangedEvent event) {
-        final int function = event.getFunction();
-        switch (function) {
-            case MokoConstants.NOTIFY_FUNCTION_ENERGY:
-                int electricityConstant = MokoSupport.getInstance().electricityConstant;
-                long total = MokoSupport.getInstance().eneryTotal;
-                float consumption = total * 1.0f / electricityConstant;
-                String energyConsumption = MokoUtils.getDecimalFormat("0.##").format(consumption);
-                tvEnergyConsumption.setText(energyConsumption);
-                break;
-        }
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)
+    public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
+        final String action = event.getAction();
+        activity.runOnUiThread(() -> {
+            if (MokoConstants.ACTION_CURRENT_DATA.equals(action)) {
+                OrderTaskResponse response = event.getResponse();
+                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
+                int responseType = response.responseType;
+                byte[] value = response.responseValue;
+                switch (responseType) {
+                    case MokoSupport.NOTIFY_FUNCTION_ENERGY:
+                        int electricityConstant = MokoSupport.getInstance().electricityConstant;
+                        long total = MokoSupport.getInstance().eneryTotal;
+                        float consumption = total * 1.0f / electricityConstant;
+                        String energyConsumption = MokoUtils.getDecimalFormat("0.##").format(consumption);
+                        tvEnergyConsumption.setText(energyConsumption);
+                        break;
+                }
+            }
+        });
     }
 
     @Override

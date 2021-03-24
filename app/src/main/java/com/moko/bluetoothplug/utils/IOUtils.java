@@ -46,7 +46,7 @@ public class IOUtils {
      */
     public static String getDefaultFilePath() {
         String filepath = "";
-        File file = new File(Environment.getExternalStorageDirectory() + File.separator + "mokoEmpty",
+        File file = new File(Environment.getExternalStorageDirectory() + File.separator + "BluetoothPlug",
                 CRASH_FILE);
         try {
             if (file.exists()) {
@@ -68,7 +68,7 @@ public class IOUtils {
      */
     public static String getFilePath(String fileName) {
         String filepath = "";
-        File file = new File(Environment.getExternalStorageDirectory() + File.separator + "mokoEmpty",
+        File file = new File(Environment.getExternalStorageDirectory() + File.separator + "BluetoothPlug",
                 fileName);
         try {
             if (file.exists()) {

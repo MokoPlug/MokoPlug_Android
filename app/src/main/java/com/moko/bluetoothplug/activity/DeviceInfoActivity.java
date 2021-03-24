@@ -15,6 +15,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.moko.ble.lib.MokoConstants;
+import com.moko.ble.lib.event.ConnectStatusEvent;
+import com.moko.ble.lib.event.OrderTaskResponseEvent;
+import com.moko.ble.lib.task.OrderTask;
+import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.bluetoothplug.R;
 import com.moko.bluetoothplug.dialog.AlertMessageDialog;
 import com.moko.bluetoothplug.dialog.LoadingMessageDialog;
@@ -22,14 +27,10 @@ import com.moko.bluetoothplug.fragment.EnergyFragment;
 import com.moko.bluetoothplug.fragment.PowerFragment;
 import com.moko.bluetoothplug.fragment.SettingFragment;
 import com.moko.bluetoothplug.fragment.TimerFragment;
-import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
-import com.moko.support.entity.OrderEnum;
-import com.moko.support.event.ConnectStatusEvent;
-import com.moko.support.event.OrderTaskResponseEvent;
-import com.moko.support.task.OrderTask;
-import com.moko.support.task.OrderTaskResponse;
+import com.moko.support.entity.OrderCHAR;
+import com.moko.support.entity.ParamsKeyEnum;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -110,7 +111,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
+                if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
                     MokoSupport.getInstance().countDown = 0;
                     MokoSupport.getInstance().countDownInit = 0;
                     setResult(RESULT_OK);
@@ -130,16 +131,21 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             }
             if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
                 OrderTaskResponse response = event.getResponse();
-                OrderEnum order = response.order;
+                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
                 int responseType = response.responseType;
                 byte[] value = response.responseValue;
-                switch (order) {
-                    case WRITE_RESET_ENERGY_TOTAL:
-                        settingFragment.resetEnergyTotal();
-                        energyFragment.resetEnergyData();
-                        break;
-                    case WRITE_RESET:
-                        break;
+                switch (orderCHAR) {
+                    case CHAR_PARAMS_WRITE:
+                        final int cmd = value[1] & 0xFF;
+                        ParamsKeyEnum configKeyEnum = ParamsKeyEnum.fromParamKey(cmd);
+                        switch (configKeyEnum) {
+                            case SET_RESET_ENERGY_TOTAL:
+                                settingFragment.resetEnergyTotal();
+                                energyFragment.resetEnergyData();
+                                break;
+                            case SET_RESET:
+                                break;
+                        }
                 }
             }
         });

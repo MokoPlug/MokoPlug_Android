@@ -9,13 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.moko.ble.lib.MokoConstants;
+import com.moko.ble.lib.event.OrderTaskResponseEvent;
+import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.bluetoothplug.R;
 import com.moko.bluetoothplug.activity.DeviceInfoActivity;
 import com.moko.bluetoothplug.utils.ToastUtils;
 import com.moko.bluetoothplug.view.ArcProgress;
-import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.event.DataChangedEvent;
+import com.moko.support.entity.OrderCHAR;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -51,27 +53,35 @@ public class PowerFragment extends Fragment {
         return fragment;
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDataChangedEvent(DataChangedEvent event) {
-        final int function = event.getFunction();
-        switch (function) {
-            case MokoConstants.NOTIFY_FUNCTION_SWITCH:
-                int onoff = MokoSupport.getInstance().switchState;
-                setOnOff(onoff);
-                break;
-            case MokoConstants.NOTIFY_FUNCTION_OVERLOAD:
-                setOverLoad();
-                break;
-            case MokoConstants.NOTIFY_FUNCTION_LOAD:
-                ToastUtils.showToast(getActivity(), "load insertion");
-                break;
-            case MokoConstants.NOTIFY_FUNCTION_ELECTRICITY:
-                String electricityP = MokoSupport.getInstance().electricityP;
-                float progress = Math.abs(Float.parseFloat(electricityP)) * 0.1f;
-                arcProgress.setProgress(progress);
-                tvPower.setText(electricityP);
-                break;
-        }
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)
+    public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
+        final String action = event.getAction();
+        activity.runOnUiThread(() -> {
+            if (MokoConstants.ACTION_CURRENT_DATA.equals(action)) {
+                OrderTaskResponse response = event.getResponse();
+                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
+                int responseType = response.responseType;
+                byte[] value = response.responseValue;
+                switch (responseType) {
+                    case MokoSupport.NOTIFY_FUNCTION_SWITCH:
+                        int onoff = MokoSupport.getInstance().switchState;
+                        setOnOff(onoff);
+                        break;
+                    case MokoSupport.NOTIFY_FUNCTION_OVERLOAD:
+                        setOverLoad();
+                        break;
+                    case MokoSupport.NOTIFY_FUNCTION_LOAD:
+                        ToastUtils.showToast(getActivity(), "load insertion");
+                        break;
+                    case MokoSupport.NOTIFY_FUNCTION_ELECTRICITY:
+                        String electricityP = MokoSupport.getInstance().electricityP;
+                        float progress = Math.abs(Float.parseFloat(electricityP)) * 0.1f;
+                        arcProgress.setProgress(progress);
+                        tvPower.setText(electricityP);
+                        break;
+                }
+            }
+        });
     }
 
     private void setOnOff(int onoff) {

@@ -10,14 +10,16 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.moko.ble.lib.MokoConstants;
+import com.moko.ble.lib.event.OrderTaskResponseEvent;
+import com.moko.ble.lib.task.OrderTaskResponse;
+import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bluetoothplug.R;
 import com.moko.bluetoothplug.activity.DeviceInfoActivity;
 import com.moko.bluetoothplug.adapter.EnergyListAdapter;
-import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.entity.EnergyInfo;
-import com.moko.support.event.DataChangedEvent;
-import com.moko.support.utils.MokoUtils;
+import com.moko.support.entity.OrderCHAR;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -60,29 +62,37 @@ public class EnergyFragment extends Fragment implements RadioGroup.OnCheckedChan
         return fragment;
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDataChangedEvent(DataChangedEvent event) {
-        final int function = event.getFunction();
-        switch (function) {
-            case MokoConstants.NOTIFY_FUNCTION_ENERGY:
-                if (rbDaily.isChecked()) {
-                    int electricityConstant = MokoSupport.getInstance().electricityConstant;
-                    int total = MokoSupport.getInstance().eneryTotalToday;
-                    float totalToday = total * 1.0f / electricityConstant;
-                    String eneryTotalToday = MokoUtils.getDecimalFormat("0.##").format(totalToday);
-                    tvEnergyTotal.setText(eneryTotalToday);
-                    List<EnergyInfo> energyHistoryToday = MokoSupport.getInstance().energyHistoryToday;
-                    adapter.replaceData(energyHistoryToday);
-                } else {
-                    int electricityConstant = MokoSupport.getInstance().electricityConstant;
-                    int total = MokoSupport.getInstance().eneryTotalMonthly;
-                    float totalMonthly = total * 1.0f / electricityConstant;
-                    String eneryTotalMonthly = MokoUtils.getDecimalFormat("0.##").format(totalMonthly);
-                    tvEnergyTotal.setText(eneryTotalMonthly);
-                    List<EnergyInfo> energyHistory = MokoSupport.getInstance().energyHistory;
-                    adapter.replaceData(energyHistory);
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)
+    public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
+        final String action = event.getAction();
+        activity.runOnUiThread(() -> {
+            if (MokoConstants.ACTION_CURRENT_DATA.equals(action)) {
+                OrderTaskResponse response = event.getResponse();
+                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
+                int responseType = response.responseType;
+                byte[] value = response.responseValue;
+                switch (responseType) {
+                    case MokoSupport.NOTIFY_FUNCTION_ENERGY:
+                        if (rbDaily.isChecked()) {
+                            int electricityConstant = MokoSupport.getInstance().electricityConstant;
+                            int total = MokoSupport.getInstance().eneryTotalToday;
+                            float totalToday = total * 1.0f / electricityConstant;
+                            String eneryTotalToday = MokoUtils.getDecimalFormat("0.##").format(totalToday);
+                            tvEnergyTotal.setText(eneryTotalToday);
+                            List<EnergyInfo> energyHistoryToday = MokoSupport.getInstance().energyHistoryToday;
+                            adapter.replaceData(energyHistoryToday);
+                        } else {
+                            int electricityConstant = MokoSupport.getInstance().electricityConstant;
+                            int total = MokoSupport.getInstance().eneryTotalMonthly;
+                            float totalMonthly = total * 1.0f / electricityConstant;
+                            String eneryTotalMonthly = MokoUtils.getDecimalFormat("0.##").format(totalMonthly);
+                            tvEnergyTotal.setText(eneryTotalMonthly);
+                            List<EnergyInfo> energyHistory = MokoSupport.getInstance().energyHistory;
+                            adapter.replaceData(energyHistory);
+                        }
                 }
-        }
+            }
+        });
     }
 
     @Override
@@ -103,8 +113,8 @@ public class EnergyFragment extends Fragment implements RadioGroup.OnCheckedChan
         String eneryTotalToday = MokoUtils.getDecimalFormat("0.##").format(totalToday);
         tvEnergyTotal.setText(eneryTotalToday);
         Calendar calendar = Calendar.getInstance();
-        String time = MokoUtils.calendar2StrDate(calendar, "HH");
-        String date = MokoUtils.calendar2StrDate(calendar, "MM-dd");
+        String time = MokoUtils.calendar2strDate(calendar, "HH");
+        String date = MokoUtils.calendar2strDate(calendar, "MM-dd");
         tvDuration.setText(String.format("00:00 to %s:00,%s", time, date));
         List<EnergyInfo> energyInfos = MokoSupport.getInstance().energyHistoryToday;
         if (energyInfos != null) {
@@ -157,8 +167,8 @@ public class EnergyFragment extends Fragment implements RadioGroup.OnCheckedChan
                 String eneryTotalToday = MokoUtils.getDecimalFormat("0.##").format(totalToday);
                 tvEnergyTotal.setText(eneryTotalToday);
                 Calendar calendarDaily = Calendar.getInstance();
-                String time = MokoUtils.calendar2StrDate(calendarDaily, "HH");
-                String date = MokoUtils.calendar2StrDate(calendarDaily, "MM-dd");
+                String time = MokoUtils.calendar2strDate(calendarDaily, "HH");
+                String date = MokoUtils.calendar2strDate(calendarDaily, "MM-dd");
                 tvDuration.setText(String.format("00:00 to %s:00,%s", time, date));
                 tvUnit.setText("Hour");
                 List<EnergyInfo> energyHistoryToday = MokoSupport.getInstance().energyHistoryToday;
@@ -173,9 +183,9 @@ public class EnergyFragment extends Fragment implements RadioGroup.OnCheckedChan
                 String eneryTotalMonthly = MokoUtils.getDecimalFormat("0.##").format(totalMonthly);
                 tvEnergyTotal.setText(eneryTotalMonthly);
                 Calendar calendarMonthly = Calendar.getInstance();
-                String end = MokoUtils.calendar2StrDate(calendarMonthly, "MM-dd");
+                String end = MokoUtils.calendar2strDate(calendarMonthly, "MM-dd");
                 calendarMonthly.add(Calendar.DAY_OF_MONTH, -29);
-                String start = MokoUtils.calendar2StrDate(calendarMonthly, "MM-dd");
+                String start = MokoUtils.calendar2strDate(calendarMonthly, "MM-dd");
                 tvDuration.setText(String.format("%s to %s", start, end));
                 tvUnit.setText("Date");
                 List<EnergyInfo> energyHistory = MokoSupport.getInstance().energyHistory;

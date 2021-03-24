@@ -3,10 +3,10 @@ package com.moko.bluetoothplug;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
+import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bluetoothplug.entity.PlugInfo;
 import com.moko.support.entity.DeviceInfo;
 import com.moko.support.service.DeviceInfoParseable;
-import com.moko.support.utils.MokoUtils;
 
 import java.util.Arrays;
 
@@ -34,16 +34,16 @@ public class PlugInfoParseableImpl implements DeviceInfoParseable<PlugInfo> {
             byte[] electricityCBytes = Arrays.copyOfRange(manufacturerData, 4, 7);
             byte[] electricityPBytes = Arrays.copyOfRange(manufacturerData, 7, 9);
             binary = MokoUtils.hexString2binaryString(MokoUtils.byte2HexString(manufacturerData[12]));
-            electricityV = MokoUtils.getDecimalFormat("0.#").format(MokoUtils.toIntUnsigned(electricityVBytes) * 0.1f);
-            electricityC = MokoUtils.getDecimalFormat("0.###").format(MokoUtils.toIntUnsigned(electricityCBytes) * 0.001f);
-            electricityP = MokoUtils.getDecimalFormat("0.#").format(MokoUtils.toIntUnsigned(electricityPBytes) * 0.1f);
+            electricityV = MokoUtils.getDecimalFormat("0.#").format(MokoUtils.toInt(electricityVBytes) * 0.1f);
+            electricityC = MokoUtils.getDecimalFormat("0.###").format(MokoUtils.toInt(electricityCBytes) * 0.001f);
+            electricityP = MokoUtils.getDecimalFormat("0.#").format(MokoUtils.toInt(electricityPBytes) * 0.1f);
         }
         if (manufacturerData.length == 16) {
             byte[] electricityVBytes = Arrays.copyOfRange(manufacturerData, 2, 4);
             byte[] electricityCBytes = Arrays.copyOfRange(manufacturerData, 4, 8);
             byte[] electricityPBytes = Arrays.copyOfRange(manufacturerData, 8, 12);
             binary = MokoUtils.hexString2binaryString(MokoUtils.byte2HexString(manufacturerData[15]));
-            electricityV = MokoUtils.getDecimalFormat("0.#").format(MokoUtils.toIntUnsigned(electricityVBytes) * 0.1f);
+            electricityV = MokoUtils.getDecimalFormat("0.#").format(MokoUtils.toInt(electricityVBytes) * 0.1f);
             electricityC = MokoUtils.getDecimalFormat("0.###").format(MokoUtils.toIntSigned(electricityCBytes) * 0.001f);
             electricityP = MokoUtils.getDecimalFormat("0.#").format(MokoUtils.toIntSigned(electricityPBytes) * 0.1f);
         }

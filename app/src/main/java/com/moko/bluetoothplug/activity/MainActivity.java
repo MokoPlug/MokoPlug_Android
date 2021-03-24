@@ -6,7 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Message;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
@@ -16,6 +17,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.moko.ble.lib.MokoConstants;
+import com.moko.ble.lib.event.ConnectStatusEvent;
+import com.moko.ble.lib.event.OrderTaskResponseEvent;
+import com.moko.ble.lib.task.OrderTask;
+import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.bluetoothplug.AppConstants;
 import com.moko.bluetoothplug.PlugInfoParseableImpl;
 import com.moko.bluetoothplug.R;
@@ -26,17 +32,12 @@ import com.moko.bluetoothplug.dialog.LoadingMessageDialog;
 import com.moko.bluetoothplug.dialog.ScanFilterDialog;
 import com.moko.bluetoothplug.entity.PlugInfo;
 import com.moko.bluetoothplug.utils.ToastUtils;
-import com.moko.support.MokoConstants;
+import com.moko.support.MokoBleScanner;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
 import com.moko.support.callback.MokoScanDeviceCallback;
 import com.moko.support.entity.DeviceInfo;
-import com.moko.support.entity.OrderEnum;
-import com.moko.support.event.ConnectStatusEvent;
-import com.moko.support.event.OrderTaskResponseEvent;
-import com.moko.support.handler.BaseMessageHandler;
-import com.moko.support.task.OrderTask;
-import com.moko.support.task.OrderTaskResponse;
+import com.moko.support.entity.OrderCHAR;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -45,8 +46,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -71,18 +72,19 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     @BindView(R.id.rl_edit_filter)
     RelativeLayout rlEditFilter;
     private boolean mReceiverTag = false;
-    private HashMap<String, PlugInfo> plugInfoHashMap;
+    private ConcurrentHashMap<String, PlugInfo> plugInfoHashMap;
     private ArrayList<PlugInfo> plugInfos;
     private PlugInfoParseableImpl plugInfoParseable;
     private PlugListAdapter adapter;
-    private CustomHandler mHandler;
+    private Handler mHandler;
+    private MokoBleScanner mokoBleScanner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        plugInfoHashMap = new HashMap<>();
+        plugInfoHashMap = new ConcurrentHashMap<>();
         plugInfos = new ArrayList<>();
         adapter = new PlugListAdapter();
         adapter.replaceData(plugInfos);
@@ -90,7 +92,8 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         adapter.openLoadAnimation();
         rvDevices.setLayoutManager(new LinearLayoutManager(this));
         rvDevices.setAdapter(adapter);
-        mHandler = new CustomHandler(this);
+        mHandler = new Handler(Looper.getMainLooper());
+        mokoBleScanner = new MokoBleScanner(this);
         EventBus.getDefault().register(this);
         // 注册广播接收器
         IntentFilter filter = new IntentFilter();
@@ -119,7 +122,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                         case BluetoothAdapter.STATE_TURNING_OFF:
                             if (animation != null) {
                                 mHandler.removeMessages(0);
-                                MokoSupport.getInstance().stopScanDevice();
+                                mokoBleScanner.stopScanDevice();
                                 onStopScan();
                             }
                             break;
@@ -138,7 +141,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onConnectStatusEvent(ConnectStatusEvent event) {
         String action = event.getAction();
-        if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
+        if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
             // 设备断开，通知页面更新
             dismissLoadingProgressDialog();
             if (animation == null) {
@@ -183,10 +186,10 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         }
         if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
             OrderTaskResponse response = event.getResponse();
-            OrderEnum order = response.order;
+            OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
             int responseType = response.responseType;
             byte[] value = response.responseValue;
-            switch (order) {
+            switch (orderCHAR) {
 
             }
         }
@@ -232,11 +235,11 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         animation = AnimationUtils.loadAnimation(this, R.anim.rotate_refresh);
         findViewById(R.id.iv_refresh).startAnimation(animation);
         plugInfoParseable = new PlugInfoParseableImpl();
-        MokoSupport.getInstance().startScanDevice(this);
+        mokoBleScanner.startScanDevice(this);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                MokoSupport.getInstance().stopScanDevice();
+                mokoBleScanner.stopScanDevice();
             }
         }, 1000 * 60);
     }
@@ -312,6 +315,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         } else {
             plugInfos.addAll(plugInfoHashMap.values());
         }
+        System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
         Collections.sort(plugInfos, new Comparator<PlugInfo>() {
             @Override
             public int compare(PlugInfo lhs, PlugInfo rhs) {
@@ -345,7 +349,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                     startScan();
                 } else {
                     mHandler.removeMessages(0);
-                    MokoSupport.getInstance().stopScanDevice();
+                    mokoBleScanner.stopScanDevice();
                 }
                 break;
             case R.id.iv_about:
@@ -355,7 +359,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             case R.id.rl_filter:
                 if (animation != null) {
                     mHandler.removeMessages(0);
-                    MokoSupport.getInstance().stopScanDevice();
+                    mokoBleScanner.stopScanDevice();
                 }
                 ScanFilterDialog scanFilterDialog = new ScanFilterDialog();
                 scanFilterDialog.setFilterName(filterName);
@@ -403,7 +407,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             case R.id.iv_filter_delete:
                 if (animation != null) {
                     mHandler.removeMessages(0);
-                    MokoSupport.getInstance().stopScanDevice();
+                    mokoBleScanner.stopScanDevice();
                 }
                 rlFilter.setVisibility(View.GONE);
                 rlEditFilter.setVisibility(View.VISIBLE);
@@ -429,13 +433,13 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         if (plugInfo != null && !isFinishing()) {
             if (animation != null) {
                 mHandler.removeMessages(0);
-                MokoSupport.getInstance().stopScanDevice();
+                mokoBleScanner.stopScanDevice();
             }
             showLoadingProgressDialog();
             ivRefresh.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    MokoSupport.getInstance().connDevice(MainActivity.this, plugInfo.mac);
+                    MokoSupport.getInstance().connDevice(plugInfo.mac);
                 }
             }, 1000);
         }
@@ -479,16 +483,5 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             }
         });
         dialog.show(getSupportFragmentManager());
-    }
-
-    public class CustomHandler extends BaseMessageHandler<MainActivity> {
-
-        public CustomHandler(MainActivity activity) {
-            super(activity);
-        }
-
-        @Override
-        protected void handleMessage(MainActivity activity, Message msg) {
-        }
     }
 }
