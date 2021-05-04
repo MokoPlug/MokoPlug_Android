@@ -2,104 +2,104 @@ package com.moko.support;
 
 
 import com.moko.ble.lib.task.OrderTask;
-import com.moko.support.entity.ParamsKeyEnum;
+import com.moko.support.entity.ParamsReadKeyEnum;
 import com.moko.support.task.ParamsReadTask;
 import com.moko.support.task.ParamsWriteTask;
 
 public class OrderTaskAssembler {
     public static OrderTask readAdvInterval() {
         ParamsReadTask task = new ParamsReadTask();
-        task.setData(ParamsKeyEnum.GET_ADV_INTERVAL);
+        task.setData(ParamsReadKeyEnum.GET_ADV_INTERVAL);
         return task;
     }
 
     public static OrderTask readAdvName() {
         ParamsReadTask task = new ParamsReadTask();
-        task.setData(ParamsKeyEnum.GET_ADV_NAME);
+        task.setData(ParamsReadKeyEnum.GET_ADV_NAME);
         return task;
     }
 
     public static OrderTask readCountdown() {
         ParamsReadTask task = new ParamsReadTask();
-        task.setData(ParamsKeyEnum.GET_COUNTDOWN);
+        task.setData(ParamsReadKeyEnum.GET_COUNTDOWN);
         return task;
     }
 
     public static OrderTask readElectricity() {
         ParamsReadTask task = new ParamsReadTask();
-        task.setData(ParamsKeyEnum.GET_ELECTRICITY_VALUE);
+        task.setData(ParamsReadKeyEnum.GET_ELECTRICITY_VALUE);
         return task;
     }
 
     public static OrderTask readEnergyHistory() {
         ParamsReadTask task = new ParamsReadTask();
-        task.setData(ParamsKeyEnum.GET_ENERGY_HISTORY);
+        task.setData(ParamsReadKeyEnum.GET_ENERGY_HISTORY);
         return task;
     }
 
     public static OrderTask readEnergyHistoryToday() {
         ParamsReadTask task = new ParamsReadTask();
-        task.setData(ParamsKeyEnum.GET_ENERGY_HISTORY_TODAY);
+        task.setData(ParamsReadKeyEnum.GET_ENERGY_HISTORY_TODAY);
         return task;
     }
 
     public static OrderTask readEnergySavedParams() {
         ParamsReadTask task = new ParamsReadTask();
-        task.setData(ParamsKeyEnum.GET_ENERGY_SAVED_PARAMS);
+        task.setData(ParamsReadKeyEnum.GET_ENERGY_SAVED_PARAMS);
         return task;
     }
 
     public static OrderTask readEnergyTotal() {
         ParamsReadTask task = new ParamsReadTask();
-        task.setData(ParamsKeyEnum.GET_ENERGY_TOTAL);
+        task.setData(ParamsReadKeyEnum.GET_ENERGY_TOTAL);
         return task;
     }
 
     public static OrderTask readFirmwareVersion() {
         ParamsReadTask task = new ParamsReadTask();
-        task.setData(ParamsKeyEnum.GET_FIRMWARE_VERISON);
+        task.setData(ParamsReadKeyEnum.GET_FIRMWARE_VERISON);
         return task;
     }
 
     public static OrderTask readLoadState() {
         ParamsReadTask task = new ParamsReadTask();
-        task.setData(ParamsKeyEnum.GET_LOAD_STATE);
+        task.setData(ParamsReadKeyEnum.GET_LOAD_STATE);
         return task;
     }
 
     public static OrderTask readMac() {
         ParamsReadTask task = new ParamsReadTask();
-        task.setData(ParamsKeyEnum.GET_MAC);
+        task.setData(ParamsReadKeyEnum.GET_MAC);
         return task;
     }
 
     public static OrderTask readOverloadTopValue() {
         ParamsReadTask task = new ParamsReadTask();
-        task.setData(ParamsKeyEnum.GET_OVERLOAD_TOP_VALUE);
+        task.setData(ParamsReadKeyEnum.GET_OVERLOAD_TOP_VALUE);
         return task;
     }
 
     public static OrderTask readOverloadValue() {
         ParamsReadTask task = new ParamsReadTask();
-        task.setData(ParamsKeyEnum.GET_OVERLOAD_VALUE);
+        task.setData(ParamsReadKeyEnum.GET_OVERLOAD_VALUE);
         return task;
     }
 
     public static OrderTask readPowerState() {
         ParamsReadTask task = new ParamsReadTask();
-        task.setData(ParamsKeyEnum.GET_POWER_STATE);
+        task.setData(ParamsReadKeyEnum.GET_POWER_STATE);
         return task;
     }
 
     public static OrderTask readSwitchState() {
         ParamsReadTask task = new ParamsReadTask();
-        task.setData(ParamsKeyEnum.GET_SWITCH_STATE);
+        task.setData(ParamsReadKeyEnum.GET_SWITCH_STATE);
         return task;
     }
 
     public static OrderTask readElectricityConstant() {
         ParamsReadTask task = new ParamsReadTask();
-        task.setData(ParamsKeyEnum.GET_ELECTRICITY_CONSTANT);
+        task.setData(ParamsReadKeyEnum.GET_ELECTRICITY_CONSTANT);
         return task;
     }
 

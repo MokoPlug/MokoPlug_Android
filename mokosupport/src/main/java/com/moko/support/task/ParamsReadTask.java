@@ -6,7 +6,7 @@ import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.support.MokoSupport;
 import com.moko.support.entity.EnergyInfo;
 import com.moko.support.entity.OrderCHAR;
-import com.moko.support.entity.ParamsKeyEnum;
+import com.moko.support.entity.ParamsReadKeyEnum;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +29,7 @@ public class ParamsReadTask extends OrderTask {
         return data;
     }
 
-    public void setData(ParamsKeyEnum key) {
+    public void setData(ParamsReadKeyEnum key) {
         switch (key) {
             case GET_ADV_NAME:
             case GET_ADV_INTERVAL:
@@ -63,7 +63,7 @@ public class ParamsReadTask extends OrderTask {
         final int length = value[2] & 0xFF;
         if (header != HEADER_READ_GET)
             return false;
-        ParamsKeyEnum configKeyEnum = ParamsKeyEnum.fromParamKey(cmd);
+        ParamsReadKeyEnum configKeyEnum = ParamsReadKeyEnum.fromParamKey(cmd);
         if (configKeyEnum == null)
             return false;
         switch (configKeyEnum) {

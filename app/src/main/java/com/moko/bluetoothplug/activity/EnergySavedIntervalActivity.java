@@ -20,7 +20,8 @@ import com.moko.bluetoothplug.utils.ToastUtils;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
 import com.moko.support.entity.OrderCHAR;
-import com.moko.support.entity.ParamsKeyEnum;
+import com.moko.support.entity.ParamsReadKeyEnum;
+import com.moko.support.entity.ParamsWriteKeyEnum;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -91,7 +92,7 @@ public class EnergySavedIntervalActivity extends BaseActivity {
                 switch (orderCHAR) {
                     case CHAR_PARAMS_WRITE:
                         final int cmd = value[1] & 0xFF;
-                        ParamsKeyEnum configKeyEnum = ParamsKeyEnum.fromParamKey(cmd);
+                        ParamsWriteKeyEnum configKeyEnum = ParamsWriteKeyEnum.fromParamKey(cmd);
                         switch (configKeyEnum) {
                             case SET_ENERGY_SAVED_PARAMS:
                                 if (0 == (value[3] & 0xFF)) {

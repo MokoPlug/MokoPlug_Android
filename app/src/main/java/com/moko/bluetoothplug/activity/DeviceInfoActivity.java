@@ -30,7 +30,8 @@ import com.moko.bluetoothplug.fragment.TimerFragment;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
 import com.moko.support.entity.OrderCHAR;
-import com.moko.support.entity.ParamsKeyEnum;
+import com.moko.support.entity.ParamsReadKeyEnum;
+import com.moko.support.entity.ParamsWriteKeyEnum;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -137,7 +138,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                 switch (orderCHAR) {
                     case CHAR_PARAMS_WRITE:
                         final int cmd = value[1] & 0xFF;
-                        ParamsKeyEnum configKeyEnum = ParamsKeyEnum.fromParamKey(cmd);
+                        ParamsWriteKeyEnum configKeyEnum = ParamsWriteKeyEnum.fromParamKey(cmd);
                         switch (configKeyEnum) {
                             case SET_RESET_ENERGY_TOTAL:
                                 settingFragment.resetEnergyTotal();
