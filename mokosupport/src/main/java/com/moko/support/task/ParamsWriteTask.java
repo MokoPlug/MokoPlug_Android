@@ -3,7 +3,6 @@ package com.moko.support.task;
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.support.entity.OrderCHAR;
-import com.moko.support.entity.ParamsReadKeyEnum;
 import com.moko.support.entity.ParamsWriteKeyEnum;
 
 import java.util.Calendar;

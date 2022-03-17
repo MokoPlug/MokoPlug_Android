@@ -30,7 +30,6 @@ import com.moko.bluetoothplug.fragment.TimerFragment;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
 import com.moko.support.entity.OrderCHAR;
-import com.moko.support.entity.ParamsReadKeyEnum;
 import com.moko.support.entity.ParamsWriteKeyEnum;
 
 import org.greenrobot.eventbus.EventBus;
