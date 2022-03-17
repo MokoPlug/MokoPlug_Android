@@ -20,13 +20,6 @@ import com.moko.bluetoothplug.utils.Utils;
 import androidx.core.app.ActivityCompat;
 import butterknife.ButterKnife;
 
-
-/**
- * @Date 2017/12/7 0007
- * @Author wenzheng.liu
- * @Description
- * @ClassPath com.moko.bluetoothplug.activity.GuideActivity
- */
 public class GuideActivity extends BaseActivity {
 
     @Override
@@ -117,7 +110,7 @@ public class GuideActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AppConstants.REQUEST_CODE_PERMISSION) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (!isWriteStoragePermissionOpen()) {
                     showOpenSettingsDialog();
                 } else {

@@ -4,8 +4,7 @@
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
 
-    <string name="about_moko_url"><![CDATA[http://doc.mokotechnology.com/index.php?s=/1&page_id=208]]></string>
-    <string name="version_info">Version:%s</string>
+    <string name="version_info">V %s</string>
     <string name="about_moko_name">MOKO TECHNOLOGY LTD.</string>
     <string name="company_website">www.mokosmart.com</string>
 
@@ -23,12 +22,5 @@
 
     <string name="main_exit_tips">Are you sure you want to quit?</string>
     <string name="setting_syncing">syncing</string>
-    <string name="countdown_tips">%s after countdown</string>
-    <string name="countdown_timer_on">Countdown timer (on)</string>
-    <string name="countdown_timer_off">Countdown timer (off)</string>
-    <string name="modify_device_name_empty">Device name can\'t be blank</string>
-    <string name="success">Success</string>
-    <string name="timeout">Timeout</string>
-    <string name="failed">Failed</string>
 
 </resources>

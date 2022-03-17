@@ -16,12 +16,13 @@ import com.elvishew.xlog.printer.file.FilePrinter;
 import com.elvishew.xlog.printer.file.naming.ChangelessFileNameGenerator;
 import com.moko.ble.lib.log.ClearLogBackStrategy;
 import com.moko.bluetoothplug.utils.IOUtils;
-import com.moko.support.MokoSupport;
 
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+
+import es.dmoral.toasty.Toasty;
 
 public class BaseApplication extends Application {
 
@@ -33,8 +34,8 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Toasty.Config.getInstance().apply();
         initXLog();
-        MokoSupport.getInstance().init(getApplicationContext());
         Thread.setDefaultUncaughtExceptionHandler(new BTUncaughtExceptionHandler());
     }
 

@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:src="@drawable/about_logo" />
+                android:src="@drawable/ic_logo" />
 
             <TextView
                 android:id="@+id/tv_soft_version"
@@ -195,7 +195,7 @@
                         android:drawableLeft="@drawable/ic_manual"
                         android:drawablePadding="10dp"
                         android:gravity="center_vertical"
-                        android:text="Manual"
+                        android:text="Website"
                         android:textSize="18sp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -205,7 +205,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:onClick="openURL"
-                        android:text="@string/about_moko_url"
+                        android:text="@string/company_website"
                         android:textColor="@color/blue_2681ff"
                         android:textSize="15sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -223,25 +223,28 @@
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/tv_feedback_log"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/shape_radius_blue_btn_bg"
+                android:clickable="true"
+                android:gravity="center"
+                android:onClick="onFeedbackLog"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:text="Feedback log"
+                android:textColor="@color/white_ffffff"
+                android:textSize="20dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:text="@string/about_moko_name"
                 android:textColor="@color/black_333333"
                 android:textSize="15sp" />
-
-
-            <TextView
-                android:id="@+id/tv_moko_url"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:onClick="companyUrl"
-                android:text="@string/company_website"
-                android:textColor="@color/blue_2681ff"
-                android:textSize="16sp" />
         </LinearLayout>
 
     </ScrollView>

@@ -11,20 +11,12 @@
         android:layout_height="55dp"
         android:background="@color/blue_2681ff">
 
-        <ImageView
-            android:id="@+id/iv_refresh"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:src="@drawable/refresh" />
-
         <TextView
             android:id="@+id/tv_device_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="DEVICE"
+            android:text="Select Device Type"
             android:textColor="@color/white_ffffff"
             android:textSize="18sp" />
 
@@ -33,71 +25,146 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:onClick="onAbout"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:src="@drawable/about" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/rl_edit_filter"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="32dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginRight="12dp"
-        android:background="@drawable/shape_edit_grey_bg"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:text="Edit Filter"
-            android:textColor="@color/grey_808080"
-            android:textSize="12sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-    </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:background="@drawable/shape_radius_white_bg"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:onClick="gotoMK114B"
+                android:orientation="horizontal"
+                android:padding="15dp">
 
-    <RelativeLayout
-        android:id="@+id/rl_filter"
-        android:layout_width="match_parent"
-        android:layout_height="32dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginRight="12dp"
-        android:background="@drawable/shape_edit_grey_bg"
-        android:paddingLeft="12dp"
-        android:visibility="gone">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_power_checked" />
 
-        <TextView
-            android:id="@+id/tv_filter"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:text=""
-            android:textColor="@color/black_333333"
-            android:textSize="12sp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:text="MK114B"
+                    android:textColor="@color/text_black_4d4d4d"
+                    android:textSize="16sp" />
 
-        <ImageView
-            android:id="@+id/iv_filter_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:src="@drawable/filter_delete" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/right_arrow" />
 
-    </RelativeLayout>
+            </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_devices"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="6dp"
-        android:layout_weight="1.0"
-        android:overScrollMode="never"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        tools:listitem="@layout/item_device" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/shape_radius_white_bg"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:onClick="gotoMK115B"
+                android:orientation="horizontal"
+                android:padding="15dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_power_checked" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:text="MK115B"
+                    android:textColor="@color/text_black_4d4d4d"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/right_arrow" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/shape_radius_white_bg"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:onClick="gotoMK116B"
+                android:orientation="horizontal"
+                android:padding="15dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_power_checked" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:text="MK116B"
+                    android:textColor="@color/text_black_4d4d4d"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/right_arrow" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/shape_radius_white_bg"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:onClick="gotoMK117B"
+                android:orientation="horizontal"
+                android:padding="15dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_power_checked" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:text="MK117B"
+                    android:textColor="@color/text_black_4d4d4d"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/right_arrow" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

@@ -8,8 +8,8 @@ android {
         applicationId "com.moko.bluetoothplug"
         minSdkVersion 18
         targetSdkVersion 30
-        versionCode 6
-        versionName "1.0.5"
+        versionCode 7
+        versionName "1.1.0"
     }
 
     buildTypes {
@@ -36,30 +36,31 @@ android {
             }
         }
     }
-}
 
-configurations.all {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        def requested = details.requested
-        if (requested.group == 'com.android.support') {
-            if (!requested.name.startsWith("multidex")) {
-                details.useVersion rootProject.v4Version
-            }
+    repositories {
+        flatDir {
+            dirs 'libs'
         }
     }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: '*.jar')
+    implementation files('libs/mokoBleLib.jar')
     // Butter Knife
     implementation 'com.jakewharton:butterknife:10.2.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.github.GrenderG:Toasty:1.4.1'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
-    implementation project(path: ':mokosupport')
+    // loratracker
+    implementation 'cn.carbswang.android:NumberPickerView:1.1.1'
+    // conmmon
+    implementation 'no.nordicsemi.android.support.v18:scanner:1.4.3'
+    implementation 'com.elvishew:xlog:1.6.1'
+    implementation 'no.nordicsemi.android:dfu:0.6.2'
+    implementation 'org.greenrobot:eventbus:3.2.0'
+    implementation 'no.nordicsemi.android:ble:2.2.4'
 }
