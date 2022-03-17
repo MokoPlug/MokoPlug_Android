@@ -1,4 +1,4 @@
-# BluetoothPlug Android SDK Guide（English）
+# MokoPlug Android SDK Guide（English）
 
 ## Intro
 

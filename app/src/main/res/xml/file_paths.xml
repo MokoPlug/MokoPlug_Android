@@ -1,4 +1,4 @@
 <paths>
-    <external-path name="log" path="BluetoothPlug/"/>
+    <external-path name="log" path="MokoPlug/"/>
     <external-path name="*" path="."/>
 </paths>

@@ -6,11 +6,14 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import androidx.core.content.FileProvider;
 
 public class Utils {
 
@@ -23,10 +26,10 @@ public class Utils {
         String devicePath;
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             // 优先保存到SD卡中
-            devicePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "BluetoothPlug" + File.separator + fileName;
+            devicePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "MokoPlug" + File.separator + fileName;
         } else {
             // 如果SD卡不存在，就保存到本应用的目录下
-            devicePath = context.getFilesDir().getAbsolutePath() + File.separator + "BluetoothPlug" + File.separator + fileName;
+            devicePath = context.getFilesDir().getAbsolutePath() + File.separator + "MokoPlug" + File.separator + fileName;
         }
         File deviceListFile = new File(devicePath);
         if (!deviceListFile.exists()) {
@@ -55,12 +58,26 @@ public class Utils {
         Intent intent;
         if (files.length == 1) {
             intent = new Intent(Intent.ACTION_SEND);
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(files[0]));
+            Uri uri;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                uri = IOUtils.insertDownloadFile(context, files[0]);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                uri = FileProvider.getUriForFile(context, "com.moko.bluetoothplug.fileprovider", files[0]);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            } else {
+                uri = Uri.fromFile(files[0]);
+            }
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
             intent.putExtra(Intent.EXTRA_TEXT, body);
         } else {
             ArrayList<Uri> uris = new ArrayList<>();
             for (int i = 0; i < files.length; i++) {
-                uris.add(Uri.fromFile(files[i]));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    Uri fileUri = IOUtils.insertDownloadFile(context, files[i]);
+                    uris.add(fileUri);
+                } else {
+                    uris.add(Uri.fromFile(files[i]));
+                }
             }
             intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
             intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
