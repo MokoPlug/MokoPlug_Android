@@ -47,7 +47,7 @@ android {
 dependencies {
     implementation files('libs/mokoBleLib.jar')
     implementation(name: 'MokoPlugPre_1.0.0_202203291505', ext: 'aar')
-    implementation(name: 'MokoPlugPro_1.0.0_202203301341', ext: 'aar')
+    implementation(name: 'MokoPlugPro_1.0.0_202203301415', ext: 'aar')
     // Butter Knife
     implementation 'com.jakewharton:butterknife:10.2.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
