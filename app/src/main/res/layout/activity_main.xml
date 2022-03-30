@@ -56,7 +56,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_power_checked" />
+                    android:src="@drawable/ic_114" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -87,7 +87,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_power_checked" />
+                    android:src="@drawable/ic_115" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -118,7 +118,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_power_checked" />
+                    android:src="@drawable/ic_116" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -149,7 +149,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_power_checked" />
+                    android:src="@drawable/ic_117" />
 
                 <TextView
                     android:layout_width="0dp"

@@ -9,6 +9,7 @@ import com.moko.bluetoothplug.R;
 import com.moko.bluetoothplug.dialog.AlertMessageDialog;
 import com.moko.bluetoothplug.utils.Utils;
 import com.moko.mokoplugpre.activity.PreMainActivity;
+import com.moko.mokoplugpro.activity.ProMainActivity;
 
 import butterknife.ButterKnife;
 
@@ -46,21 +47,28 @@ public class MainActivity extends BaseActivity {
 
     public void gotoMK114B(View view) {
         XLog.d("打开MK114B");
-        startActivity(new Intent(this, PreMainActivity.class));
+        Intent intent = new Intent(this, PreMainActivity.class);
+        intent.putExtra("deviceType", 0);
+        startActivity(intent);
     }
 
     public void gotoMK115B(View view) {
         XLog.d("打开MK115B");
-        startActivity(new Intent(this, PreMainActivity.class));
+        Intent intent = new Intent(this, PreMainActivity.class);
+        intent.putExtra("deviceType", 1);
+        startActivity(intent);
     }
 
     public void gotoMK116B(View view) {
         XLog.d("打开MK116B");
-        startActivity(new Intent(this, PreMainActivity.class));
+        Intent intent = new Intent(this, PreMainActivity.class);
+        intent.putExtra("deviceType", 2);
+        startActivity(intent);
     }
 
     public void gotoMK117B(View view) {
         XLog.d("打开MK117B");
+        startActivity(new Intent(this, ProMainActivity.class));
     }
 
     public void onAbout(View view) {
