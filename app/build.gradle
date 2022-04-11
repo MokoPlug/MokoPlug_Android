@@ -46,8 +46,8 @@ android {
 
 dependencies {
     implementation files('libs/mokoBleLib.jar')
-    implementation(name: 'MokoPlugPre_1.0.0_202203291505', ext: 'aar')
-    implementation(name: 'MokoPlugPro_1.0.0_202203301415', ext: 'aar')
+    implementation(name: 'MokoPlugPre_1.0.1_202204111200', ext: 'aar')
+    implementation(name: 'MokoPlugPro_1.0.1_202204111151', ext: 'aar')
     // Butter Knife
     implementation 'com.jakewharton:butterknife:10.2.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
@@ -64,5 +64,5 @@ dependencies {
     implementation 'com.elvishew:xlog:1.6.1'
     implementation 'no.nordicsemi.android:dfu:0.6.2'
     implementation 'org.greenrobot:eventbus:3.2.0'
-    implementation 'no.nordicsemi.android:ble:2.2.4'
+    implementation 'no.nordicsemi.android:ble:2.4.0'
 }
