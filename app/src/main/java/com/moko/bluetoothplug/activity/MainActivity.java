@@ -1,26 +1,21 @@
 package com.moko.bluetoothplug.activity;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 
 import com.elvishew.xlog.XLog;
 import com.moko.bluetoothplug.R;
+import com.moko.bluetoothplug.databinding.ActivityMainBinding;
 import com.moko.bluetoothplug.dialog.AlertMessageDialog;
 import com.moko.bluetoothplug.utils.Utils;
 import com.moko.mokoplugpre.activity.PreMainActivity;
 import com.moko.mokoplugpro.activity.ProMainActivity;
 
-import butterknife.ButterKnife;
 
-
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity<ActivityMainBinding> {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+    protected void onCreate() {
         StringBuffer buffer = new StringBuffer();
         // 记录机型
         buffer.append("机型：");
@@ -34,6 +29,11 @@ public class MainActivity extends BaseActivity {
         buffer.append("APP版本：");
         buffer.append(Utils.getVersionInfo(this));
         XLog.d(buffer.toString());
+    }
+
+    @Override
+    protected ActivityMainBinding getViewBinding() {
+        return ActivityMainBinding.inflate(getLayoutInflater());
     }
 
     @Override

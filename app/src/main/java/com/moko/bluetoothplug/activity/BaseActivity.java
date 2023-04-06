@@ -10,13 +10,19 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.elvishew.xlog.XLog;
+import com.moko.mokoplugpre.activity.GuideActivity;
+import com.moko.mokoplugpre.dialog.LoadingDialog;
+import com.moko.mokoplugpre.dialog.LoadingMessageDialog;
+
+import org.greenrobot.eventbus.EventBus;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.viewbinding.ViewBinding;
 
 
-public class BaseActivity extends FragmentActivity {
-
+public abstract class BaseActivity<VM extends ViewBinding> extends FragmentActivity {
+    protected VM mBind;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,11 +32,19 @@ public class BaseActivity extends FragmentActivity {
             startActivity(intent);
             return;
         }
+        mBind = getViewBinding();
+        setContentView(mBind.getRoot());
+        onCreate();
     }
+
+    protected void onCreate(){}
+
+    protected abstract VM getViewBinding();
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -39,7 +53,6 @@ public class BaseActivity extends FragmentActivity {
         XLog.i("onConfigurationChanged...");
         finish();
     }
-
 
     // 记录上次页面控件点击时间,屏蔽无效点击事件
     protected long mLastOnClickTime = 0;
@@ -52,6 +65,33 @@ public class BaseActivity extends FragmentActivity {
         } else {
             return true;
         }
+    }
+
+    private LoadingDialog mLoadingDialog;
+
+    public void showLoadingProgressDialog() {
+        mLoadingDialog = new LoadingDialog();
+        mLoadingDialog.show(getSupportFragmentManager());
+
+    }
+
+    public void dismissLoadingProgressDialog() {
+        if (mLoadingDialog != null)
+            mLoadingDialog.dismissAllowingStateLoss();
+    }
+
+    private LoadingMessageDialog mLoadingMessageDialog;
+
+    public void showLoadingMessageDialog(String message) {
+        mLoadingMessageDialog = new LoadingMessageDialog();
+        mLoadingMessageDialog.setMessage(message);
+        mLoadingMessageDialog.show(getSupportFragmentManager());
+
+    }
+
+    public void dismissLoadingMessageDialog() {
+        if (mLoadingMessageDialog != null)
+            mLoadingMessageDialog.dismissAllowingStateLoss();
     }
 
     public boolean isWriteStoragePermissionOpen() {

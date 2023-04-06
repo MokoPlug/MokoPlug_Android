@@ -1,15 +1,18 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion "29.0.3"
 
     defaultConfig {
         applicationId "com.moko.bluetoothplug"
         minSdkVersion 18
-        targetSdkVersion 30
-        versionCode 8
-        versionName "1.1.1"
+        targetSdkVersion 31
+        versionCode 9
+        versionName "1.1.2"
+        multiDexEnabled true
+        def formatDate = new Date().format("yyyyMMddHHmm")
+        setProperty("archivesBaseName", "MokoPlug_${versionName}_${formatDate}")
     }
 
     buildTypes {
@@ -23,34 +26,25 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    applicationVariants.all { variant ->
-        variant.outputs.all { output ->
-            def outputFile = output.outputFile
-            if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                def formatedDate = new Date().format("yyyyMMddHHmm")
-                def apkFileName = "MokoPlug_${defaultConfig.versionName}_${formatedDate}.apk"
-                if (outputFile.name.contains('debug')) {
-                    apkFileName = "MokoPlug_${defaultConfig.versionName}_${formatedDate}_debug.apk"
-                }
-                outputFileName = apkFileName
-            }
-        }
-    }
-
     repositories {
         flatDir {
             dirs 'libs'
         }
     }
+
+    viewBinding {
+        enabled = true
+    }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
     implementation files('libs/mokoBleLib.jar')
-    implementation(name: 'MokoPlugPre_1.0.1_202204111200', ext: 'aar')
-    implementation(name: 'MokoPlugPro_1.0.2_202303131651', ext: 'aar')
-    // Butter Knife
-    implementation 'com.jakewharton:butterknife:10.2.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+    implementation(name: 'MokoPlugPre_1.0.2_202304061208', ext: 'aar')
+    implementation(name: 'MokoPlugPro_1.0.3_202304061209', ext: 'aar')
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.0.0'
@@ -59,10 +53,11 @@ dependencies {
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
     implementation 'cn.carbswang.android:NumberPickerView:1.1.1'
     implementation 'androidx.cardview:cardview:1.0.0'
-    // conmmon
-    implementation 'no.nordicsemi.android.support.v18:scanner:1.4.3'
+    implementation 'com.guolindev.permissionx:permissionx:1.7.1'
+    // common
+    implementation 'no.nordicsemi.android.support.v18:scanner:1.6.0'
     implementation 'com.elvishew:xlog:1.6.1'
     implementation 'no.nordicsemi.android:dfu:0.6.2'
     implementation 'org.greenrobot:eventbus:3.2.0'
-    implementation 'no.nordicsemi.android:ble:2.4.0'
+    implementation 'no.nordicsemi.android:ble:2.5.1'
 }

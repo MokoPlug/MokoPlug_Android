@@ -2,13 +2,11 @@ package com.moko.bluetoothplug.activity;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.SystemClock;
 import android.view.View;
-import android.widget.TextView;
 
 import com.moko.bluetoothplug.BaseApplication;
 import com.moko.bluetoothplug.R;
+import com.moko.bluetoothplug.databinding.ActivityAboutBinding;
 import com.moko.bluetoothplug.utils.ToastUtils;
 import com.moko.bluetoothplug.utils.Utils;
 
@@ -17,20 +15,17 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+public class AboutActivity extends BaseActivity<ActivityAboutBinding> {
 
-public class AboutActivity extends BaseActivity {
-
-    @BindView(R.id.tv_soft_version)
-    TextView tvSoftVersion;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
-        ButterKnife.bind(this);
-        tvSoftVersion.setText(getString(R.string.version_info, Utils.getVersionInfo(this)));
+    protected void onCreate() {
+        mBind.tvSoftVersion.setText(getString(R.string.version_info, Utils.getVersionInfo(this)));
+    }
+
+    @Override
+    protected ActivityAboutBinding getViewBinding() {
+        return ActivityAboutBinding.inflate(getLayoutInflater());
     }
 
     public void openURL(View view) {
