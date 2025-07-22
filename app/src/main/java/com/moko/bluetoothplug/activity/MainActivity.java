@@ -6,8 +6,8 @@ import android.view.View;
 import com.elvishew.xlog.XLog;
 import com.moko.bluetoothplug.R;
 import com.moko.bluetoothplug.databinding.ActivityMainBinding;
-import com.moko.bluetoothplug.dialog.AlertMessageDialog;
 import com.moko.bluetoothplug.utils.Utils;
+import com.moko.lib.scannerui.dialog.AlertMessageDialog;
 import com.moko.mokoplugpre.activity.PreMainActivity;
 import com.moko.mokoplugpro.activity.ProMainActivity;
 

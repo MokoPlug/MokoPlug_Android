@@ -7,8 +7,8 @@ import android.view.View;
 import com.moko.bluetoothplug.BaseApplication;
 import com.moko.bluetoothplug.R;
 import com.moko.bluetoothplug.databinding.ActivityAboutBinding;
-import com.moko.bluetoothplug.utils.ToastUtils;
 import com.moko.bluetoothplug.utils.Utils;
+import com.moko.lib.scannerui.utils.ToastUtils;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

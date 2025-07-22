@@ -22,8 +22,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import es.dmoral.toasty.Toasty;
-
 public class BaseApplication extends Application {
 
     private static final String TAG = "MokoPlug";
@@ -34,7 +32,6 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Toasty.Config.getInstance().apply();
         initXLog();
         Thread.setDefaultUncaughtExceptionHandler(new BTUncaughtExceptionHandler());
     }
